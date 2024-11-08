@@ -14,10 +14,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Database configuration
 const dbConfig = {
-  host: 'localhost',
-  user: 'root',
-  password: 'Krorgakag3Konk',
-  database: 'glowflow'
+  host: '192.168.154.199',
+  user: 'daan',
+  password: 'Daanpassword@22',
+  database: 'streetlight_db'
 };
 
 let connection;
