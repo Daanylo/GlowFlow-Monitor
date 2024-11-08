@@ -27,6 +27,6 @@ async function updateTable() {
     updateTable(); // Load data initially
   
     // Set an interval to update the table every 5 seconds (5000 ms)
-    setInterval(updateTable, 5000);
+    setInterval(updateTable, 1000);
   };
   

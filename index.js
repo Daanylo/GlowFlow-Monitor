@@ -1,7 +1,7 @@
-const mysql = require('mysql2');
-const express = require('express'); 
-const path = require('path'); 
-const { fileURLToPath } = require('url');
+import mysql from 'mysql2/promise';
+import express from 'express'; 
+import path from 'path'; 
+import { fileURLToPath } from 'url';
 
 // Convert the __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
@@ -13,12 +13,19 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Database configuration
+// const dbConfig = {
+//   host: '192.168.154.199',
+//   user: 'daan',
+//   password: 'Daanpassword@22',
+//   database: 'streetlight_db'
+// };
+
 const dbConfig = {
-  host: '192.168.154.199',
-  user: 'daan',
-  password: 'Daanpassword@22',
-  database: 'streetlight_db'
-};
+    host: 'localhost',
+    user: 'root',
+    password: 'Krorgakag3Konk',
+    database: 'glowflow'
+  };
 
 let connection;
 
