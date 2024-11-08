@@ -1,4 +1,4 @@
-import mysql from 'mysql2/promise';
+import mysql from 'mysql2/promise.js';
 import express from 'express'; 
 import path from 'path'; 
 import { fileURLToPath } from 'url';
@@ -13,19 +13,19 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Database configuration
-// const dbConfig = {
-//   host: '192.168.154.199',
-//   user: 'daan',
-//   password: 'Daanpassword@22',
-//   database: 'streetlight_db'
-// };
-
 const dbConfig = {
-    host: 'localhost',
-    user: 'root',
-    password: 'Krorgakag3Konk',
-    database: 'glowflow'
-  };
+  host: '192.168.154.199',
+  user: 'omarwadeh',
+  password: 'Omarwadeh@2002',
+  database: 'streetlight_db'
+};
+
+// const dbConfig = {
+//     host: 'localhost',
+//     user: 'root',
+//     password: 'Krorgakag3Konk',
+//     database: 'glowflow'
+//   };
 
 let connection;
 
