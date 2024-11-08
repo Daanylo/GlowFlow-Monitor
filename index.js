@@ -1,7 +1,7 @@
-import mysql from 'mysql2/promise';
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const mysql = require('mysql2');
+const express = require('express'); 
+const path = require('path'); 
+const { fileURLToPath } = require('url');
 
 // Convert the __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
