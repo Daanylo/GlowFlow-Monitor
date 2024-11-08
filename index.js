@@ -13,10 +13,17 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Database configuration
+// const dbConfig = {
+//   host: '192.168.154.199',
+//   user: 'omarwadeh',
+//   password: 'Omarwadeh@2002',
+//   database: 'streetlight_db'
+// };
+
 const dbConfig = {
   host: '192.168.154.199',
-  user: 'omarwadeh',
-  password: 'Omarwadeh@2002',
+  user: 'daan',
+  password: 'Daanpassword@22',
   database: 'streetlight_db'
 };
 
