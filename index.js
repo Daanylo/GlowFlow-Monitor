@@ -2,6 +2,7 @@ import mysql from 'mysql2/promise.js';
 import express from 'express'; 
 import path from 'path'; 
 import { fileURLToPath } from 'url';
+import session from 'express-session';
 
 // Database connectie
 let connection;
@@ -17,6 +18,8 @@ const app = express();
 app.use(express.json());
 // Module die een pad definieert naar de public folder
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(express.urlencoded({ extended: true }));
 
 // Database configuratie
 const dbConfig = {
@@ -41,14 +44,27 @@ app.post('/api/start-mock-data', (req, res) => {
   res.json({ message: 'Mock data generation started' });
 });
 
+app.use(session({
+  secret: 'your_secret_key', // Change to a strong secret in production
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false } // Set to true if using HTTPS
+}));
+
+function ensureAuthenticated(req, res, next) {
+  if (req.session.userId) {
+      return next();
+  }
+  res.redirect('/login');
+}
+
 // Wordt geroepen wanneer een GET-request gestuurd wordt naar /reports
 // Stuurt het reports.html bestand terug
-app.get('/monitor', async (req, res) => {
-  try {
-    res.sendFile(path.join(__dirname, 'public', 'reports.html'));
-  } catch (error) {
-    res.status(500).send("Error loading the HTML file");
+app.get('/monitor', (req, res) => {
+  if (!req.session.userId) {
+    return res.redirect('/login'); // Redirect to login if not authenticated
   }
+  res.sendFile(path.join(__dirname, 'public', 'reports.html'));
 });
 
 app.get('/login', async (req, res) => {
@@ -59,17 +75,48 @@ app.get('/login', async (req, res) => {
   }
 });
 
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).json({ success: false, message: "Username and password are required" });
+  }
+
+  try {
+    const [rows] = await connection.execute(
+      'SELECT * FROM user WHERE username = ? AND password = ?',
+      [username, password]
+    );
+
+    if (rows.length > 0) {
+      // Store user ID in session and redirect to /monitor
+      req.session.userId = rows[0].id;
+      req.session.networkId = rows[0].network_id; // Store network_id for later use
+      return res.json({ success: true });
+    } else {
+      return res.status(401).json({ success: false, message: "Invalid username or password" });
+    }
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    return res.status(500).json({ success: false, message: "Error logging in" });
+  }
+});
+
+
 // Wordt geroepen wanneer een GET-request gestuurd wordt naar /api/reports
 // Stuurt de data uit database terug in json formaat
-app.get('/api/reports', async (req, res) => {
-    try {
-        const [rows] = await connection.execute('SELECT id, datetime, voltage, amperage, network_id FROM report');
-        res.json(rows);
-    } catch (error) {
-      return;
-        // console.error("Error fetching data:", error);
-        // res.status(500).send("Error fetching data");
-    }
+app.get('/api/reports', ensureAuthenticated, async (req, res) => {
+  try {
+      const networkId = req.session.networkId;
+      const [rows] = await connection.execute(
+          'SELECT id, datetime, voltage, amperage FROM report WHERE network_id = ?',
+          [networkId]
+      );
+      res.json(rows);
+  } catch (error) {
+      console.error("Error fetching data:", error);
+      res.status(500).send("Error fetching data");
+  }
 });
 
 // Wordt geroepen wanneer er een POST-request ontvangen wordt op /api/reports
@@ -97,6 +144,18 @@ app.post('/api/reports', async (req, res) => {
       res.status(500).send("Error inserting data");
   }
 });
+
+app.post('/logout', (req, res) => {
+  // Destroy the session and redirect to the login page
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error logging out:", err);
+      return res.status(500).send("Error logging out");
+    }
+    res.redirect('/login'); // Redirect to login page after logout
+  });
+});
+
 
 // Wijst poort 3000 toe aan variabele PORT, tenzij process.env.PORT een andere poort bevat
 const PORT = process.env.PORT || 3000;

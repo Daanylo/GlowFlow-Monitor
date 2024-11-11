@@ -27,12 +27,6 @@ body {
   margin: 0 auto;
 }
 
-.header-container a {
-  color: white;
-  text-decoration: none;
-  margin-left: 20px;
-}
-
 .page-wrapper {
   max-width: 1500px;
   margin: 0 auto;
