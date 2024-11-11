@@ -12,4 +12,11 @@ table {
   th {
     background-color: #f2f2f2;
   }
+
+  #wattage-chart, #lasthour-chart {
+    max-width: 800px;
+    max-height: 400px;
+  }
+
+
   
