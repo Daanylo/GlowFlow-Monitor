@@ -43,9 +43,17 @@ app.post('/api/start-mock-data', (req, res) => {
 
 // Wordt geroepen wanneer een GET-request gestuurd wordt naar /reports
 // Stuurt het reports.html bestand terug
-app.get('/reports', async (req, res) => {
+app.get('/monitor', async (req, res) => {
   try {
     res.sendFile(path.join(__dirname, 'public', 'reports.html'));
+  } catch (error) {
+    res.status(500).send("Error loading the HTML file");
+  }
+});
+
+app.get('/login', async (req, res) => {
+  try {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
   } catch (error) {
     res.status(500).send("Error loading the HTML file");
   }
@@ -55,7 +63,7 @@ app.get('/reports', async (req, res) => {
 // Stuurt de data uit database terug in json formaat
 app.get('/api/reports', async (req, res) => {
     try {
-        const [rows] = await connection.execute('SELECT id, datetime, voltage, amperage FROM report');
+        const [rows] = await connection.execute('SELECT id, datetime, voltage, amperage, network_id FROM report');
         res.json(rows);
     } catch (error) {
       return;
@@ -67,21 +75,22 @@ app.get('/api/reports', async (req, res) => {
 // Wordt geroepen wanneer er een POST-request ontvangen wordt op /api/reports
 // Zet de json data om naar een sql query en voegt de data toe aan de database
 app.post('/api/reports', async (req, res) => {
-  const { datetime, voltage, amperage } = req.body;
-  if (!datetime || !voltage || !amperage) {
+  const { datetime, voltage, amperage, network_id } = req.body;
+  if (!datetime || !voltage || !amperage || !network_id) {
       return res.status(400).send('Missing required fields');
   }
   try {
       if (!connection) {
           return res.status(500).send('Database connection not established');
       }
-      const query = 'INSERT INTO report (datetime, voltage, amperage) VALUES (?, ?, ?)';
-      const [result] = await connection.execute(query, [datetime, voltage, amperage]);
+      const query = 'INSERT INTO report (datetime, voltage, amperage, network_id) VALUES (?, ?, ?, ?)';
+      const [result] = await connection.execute(query, [datetime, voltage, amperage, network_id]);
       res.status(201).json({ 
         id: result.insertId, 
         datetime, 
         voltage, 
-        amperage 
+        amperage,
+        network_id
       });
   } catch (error) {
       console.error("Error inserting data:", error);

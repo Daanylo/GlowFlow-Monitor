@@ -19,6 +19,7 @@ function generateMockValues() {
 
 // Function to insert one row of data
 async function insertMockData() {
+    const network_id = 1;
     try {
         const { voltage, amperage } = generateMockValues();
 
@@ -28,11 +29,11 @@ async function insertMockData() {
         const localDatetime = new Date(localDate.getTime() - timezoneOffset * 60000).toISOString().slice(0, 19).replace('T', ' ');
 
         await connection.execute(
-            'INSERT INTO report (datetime, voltage, amperage) VALUES (?, ?, ?)',
-            [localDatetime, voltage, amperage]
+            'INSERT INTO report (datetime, voltage, amperage, network_id) VALUES (?, ?, ?, ?)',
+            [localDatetime, voltage, amperage, network_id]
         );
         
-        console.log(`Added data: ${localDatetime}, ${voltage.toFixed(2)}V, ${amperage.toFixed(2)}A`);
+        console.log(`Added data: ${localDatetime}, ${voltage.toFixed(2)}V, ${amperage.toFixed(2)}A, ${network_id}`);
     } catch (error) {
         console.error('Error:', error);
     }

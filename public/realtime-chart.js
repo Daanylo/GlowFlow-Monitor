@@ -16,7 +16,8 @@ function initializeChart() {
             datasets: [{
                 label: 'Wattage (W)',
                 data: Array(31).fill(0), // Initial empty data
-                borderColor: 'rgba(75, 192, 192, 1)',
+                backgroundColor: 'rgba(255, 196, 0, 0.2)',
+                borderColor: 'rgba(255, 196, 0, 1)',
                 borderWidth: 2,
                 fill: true, // Fill the area below the graph
                 tension: 0, // Smooth the line

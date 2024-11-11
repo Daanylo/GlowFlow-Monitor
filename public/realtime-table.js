@@ -9,6 +9,8 @@ async function fetchReports() {
     updateTable();
     updateChart();
     updateLastHourChart(reportData);
+    updateInfoBar(reportData);
+    updateLastYearChart(reportData);
   } catch (error) {
     console.error('Error fetching the data:', error);
   }
@@ -26,17 +28,19 @@ function formatDate(dateString) {
     hour12: false
   }).replace(',', '');
 }
-
 function updateTable() {
   const tableBody = document.querySelector("#report-table tbody");
   tableBody.innerHTML = '';
-  reportData.forEach(row => {
+  
+  // Show only the last 5 reports
+  const latestReports = reportData.slice(-5); // Get the last 5 reports
+  
+  latestReports.forEach(row => {
     const rowElement = document.createElement('tr');
     rowElement.innerHTML = `
       <td>${row.id}</td>
-      <td>${formatDate(row.datetime)}</td>
-      <td>${row.voltage}</td>
-      <td>${row.amperage}</td>
+      <td>${formatDate(row.datetime).slice(10)}</td>
+      <td>${(row.voltage * row.amperage).toFixed(2)}</td>
     `;
     tableBody.appendChild(rowElement);
   });
@@ -46,6 +50,7 @@ function updateTable() {
 window.onload = function () {
   initializeChart();
   initializeLastHourChart();
+  initializeLastYearChart();
   fetchReports();
   setInterval(fetchReports, 1000); 
 }

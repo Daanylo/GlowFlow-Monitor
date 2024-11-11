@@ -11,25 +11,66 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-  <h1>Report Data</h1>
-  <h2>Realtime Chart</h2>
-  <canvas id="wattage-chart"></canvas>
-  <script src="realtime-chart.js"></script>
-  <canvas id="lasthour-chart"></canvas>
-  <script src="lasthour-chart.js"></script>
-  <h2>Report table</h2>
-  <table id="report-table">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Datetime</th>
-        <th>Voltage</th>
-        <th>Amperage</th>
-      </tr>
-    </thead>
-    <tbody>
-    </tbody>
-  </table>
-  <script src="realtime-table.js"></script>
+  <div class="header">
+    <div class="header-wrapper">
+      <div class="header-container">
+        <img id="glowflow-logo" src="glowflow-logo-white.png">
+        <a href="/login">Logout</a>
+      </div>
+    </div>
+  </div>
+  <div class="page-wrapper">
+    <h1>Power Usage Monitor</h1>
+    <div id="info-bar">
+      <div class="info-item">
+        <h2>Current Usage</h2>
+      <p id="current-usage"></p>
+      </div>
+      <div class="info-item">
+        <h2>Last 24h</h2>
+      <p id="last-24h-usage"></p>
+      </div>
+      <div class="info-item">
+        <h2>Last Month</h2>
+      <p id="last-month-usage"></p>
+      </div>
+      <div class="info-item">
+        <h2>Money Saved</h2>
+      <p id="money-saved"></p>
+      </div>
+      <script src="info-bar.js"></script>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-container">
+          <h2>Realtime Chart</h2>
+          <canvas id="wattage-chart"></canvas>
+          <script src="realtime-chart.js"></script>
+      </div>
+
+      <div class="chart-container">
+        <h2>Last Hour Chart</h2>
+        <canvas id="lasthour-chart"></canvas>
+        <script src="lasthour-chart.js"></script>
+      </div>
+      <div class="chart-container">
+        <h2>Last Year Chart</h2>
+        <canvas id="lastyear-chart"></canvas>
+        <script src="lastyear-chart.js"></script>
+      </div>
+    </div>
+    <h2>Latest reports</h2>
+    <table id="report-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Datetime</th>
+          <th>Wattage</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+    <script src="realtime-table.js"></script>
+  </div>
 </body>
 </html>

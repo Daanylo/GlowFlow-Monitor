@@ -1,22 +1,93 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #1c312e;
+  color: white;
+}
+
+#glowflow-logo {
+  height: 100px;
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  height: 100px;
+  background-color: rgb(14, 24, 20);
+}
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1400px;
+  width: 100%;
+  padding: 0 40px;
+  margin: 0 auto;
+}
+
+.header-container a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+}
+
+.page-wrapper {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-  }
-  
-  th, td {
-    padding: 10px;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
+}
 
-  #wattage-chart, #lasthour-chart {
-    max-width: 800px;
-    max-height: 400px;
-  }
+th, td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid rgb(255, 208, 0);
+}
 
+th {
+  background-color: rgb(14, 24, 20);
+}
+
+#wattage-chart, #lasthour-chart {
+  max-width: 800px;
+  max-height: 400px;
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+  border-radius: 20px;
+  padding: 10px 20px;
+  background-color: rgb(14, 24, 20);
+}
+
+.chart-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+#info-bar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.info-item {
+    flex: 1;
+    margin-right: 10px;
+    background-color: rgb(14, 24, 20);;
+    border-radius: 20px;
+    padding: 10px 20px;
+}
 
   

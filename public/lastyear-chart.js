@@ -1,28 +1,28 @@
 // Global variable for the chart
-let lasthour_chart;
+let lastYearChart;
 
-function initializeLastHourChart() {
-    const canvas = document.getElementById('lasthour-chart');
+function initializeLastYearChart() {
+    const canvas = document.getElementById('lastyear-chart');
     const ctx = canvas.getContext('2d');
 
-    if (lasthour_chart) {
-        lasthour_chart.destroy();
+    if (lastYearChart) {
+        lastYearChart.destroy();
     }
 
-    // Initialize labels with the last 60 minutes
-    const labels = Array.from({ length: 60 }, (_, i) => {
+    // Generate labels for the last 12 months
+    const labels = Array.from({ length: 12 }, (_, i) => {
         const date = new Date();
-        date.setMinutes(date.getMinutes() - (59 - i), 0, 0); // Get each minute timestamp for the last hour
-        return date.toTimeString().slice(0, 5); // Format as HH:MM
+        date.setMonth(date.getMonth() - (11 - i)); // Get each month timestamp for the last year
+        return date.toLocaleString('default', { month: 'short', year: 'numeric' }); // Format as "MMM YYYY"
     });
 
-    lasthour_chart = new Chart(ctx, {
+    lastYearChart = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
             datasets: [{
                 label: 'Average Power Usage (kWh)',
-                data: Array(60).fill(0), // Initial empty data for 60 minutes
+                data: Array(12).fill(0), // Initial empty data for 12 months
                 backgroundColor: 'rgba(255, 196, 0, 0.2)',
                 borderColor: 'rgba(255, 196, 0, 1)',
                 borderWidth: 1
@@ -35,7 +35,7 @@ function initializeLastHourChart() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Time (HH:MM)'
+                        text: 'Month'
                     },
                     grid: {
                         display: false
@@ -48,7 +48,7 @@ function initializeLastHourChart() {
                     },
                     ticks: {
                         beginAtZero: true,
-                        stepSize: 1, // Set a step size for readability
+                        stepSize: 50, // Set an appropriate step size
                         callback: function(value) {
                             return value.toFixed(1); // Format the y-axis numbers to 1 decimal place
                         }
@@ -56,51 +56,52 @@ function initializeLastHourChart() {
                     grid: {
                         display: true
                     },
-                    min: 0,
-                    max: 10
+                    min: 0
                 }
             }
         }
     });
 }
 
-function updateLastHourChart(reportData) {
-    if (!reportData || reportData.length === 0 || !lasthour_chart) {
+function updateLastYearChart(reportData) {
+    if (!reportData || reportData.length === 0 || !lastYearChart) {
         return;
     }
+
     const now = new Date();
     const groupedData = new Map();
 
-    // Group data points by minute timestamp (formatted as "HH:MM")
+    // Group data points by month (formatted as "MMM YYYY")
     reportData.forEach(row => {
         const rowTime = new Date(row.datetime);
-        const minuteTimestamp = rowTime.toTimeString().slice(0, 5); // "HH:MM" format
+        const monthYear = rowTime.toLocaleString('default', { month: 'short', year: 'numeric' });
 
-        if (!groupedData.has(minuteTimestamp)) {
-            groupedData.set(minuteTimestamp, []);
+        if (!groupedData.has(monthYear)) {
+            groupedData.set(monthYear, []);
         }
 
         // Calculate power usage and store it for averaging
         const wattage = row.voltage * row.amperage;
-        groupedData.get(minuteTimestamp).push(wattage);
+        groupedData.get(monthYear).push(wattage);
     });
 
-    // Shift the labels and data for the last 60 minutes
-    const labels = Array.from({ length: 60 }, (_, i) => {
-        const date = new Date(now - (59 - i) * 60 * 1000); // Get each minute timestamp for the last hour
-        return date.toTimeString().slice(0, 5); // Format as HH:MM
+    // Generate labels for the last 12 months again, to ensure consistency
+    const labels = Array.from({ length: 12 }, (_, i) => {
+        const date = new Date();
+        date.setMonth(date.getMonth() - (11 - i));
+        return date.toLocaleString('default', { month: 'short', year: 'numeric' });
     });
 
-    // Update the chart data with the new average values
-    lasthour_chart.data.labels = labels;
-    lasthour_chart.data.datasets[0].data = labels.map(label => {
+    // Update the chart data with the new average values for each month
+    lastYearChart.data.labels = labels;
+    lastYearChart.data.datasets[0].data = labels.map(label => {
         const dataPoints = groupedData.get(label) || [];
-        if (dataPoints.length === 0) return 0; // No data for this minute
+        if (dataPoints.length === 0) return 0; // No data for this month
 
-        // Average of all data points within this minute
+        // Average of all data points within this month
         const sum = dataPoints.reduce((acc, value) => acc + value, 0);
         return sum / dataPoints.length;
     });
 
-    lasthour_chart.update();
+    lastYearChart.update();
 }
