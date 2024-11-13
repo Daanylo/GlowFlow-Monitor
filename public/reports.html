@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reports</title>
+  <title>GlowFlow Monitor</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@2/build/global/luxon.min.js"></script>
@@ -15,6 +15,7 @@
     <div class="header-wrapper">
       <div class="header-container">
         <img id="glowflow-logo" src="glowflow-logo-white.png">
+        <span id="username"></span>
         <form id="logout-form" action="/logout" method="post" style="display: inline;">
           <button type="submit">Logout</button>
         </form>
@@ -44,18 +45,25 @@
     </div>
     <div class="chart-grid">
       <div class="chart-container">
-          <h2>Realtime Chart</h2>
+          <h2>Realtime</h2>
           <canvas id="wattage-chart"></canvas>
           <script src="realtime-chart.js"></script>
       </div>
 
       <div class="chart-container">
-        <h2>Last Hour Chart</h2>
+        <h2>Last Hour</h2>
         <canvas id="lasthour-chart"></canvas>
         <script src="lasthour-chart.js"></script>
       </div>
+
       <div class="chart-container">
-        <h2>Last Year Chart</h2>
+        <h2>Last 24h</h2>
+        <canvas id="last24h-chart"></canvas>
+        <script src="last24h-chart.js"></script>
+      </div>
+
+      <div class="chart-container">
+        <h2>Last Year</h2>
         <canvas id="lastyear-chart"></canvas>
         <script src="lastyear-chart.js"></script>
       </div>

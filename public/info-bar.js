@@ -35,6 +35,23 @@ document.getElementById('last-month-usage').innerText = `${lastMonthUsage.toFixe
 // Calculate money saved (assuming $0.12 per kWh)
 const costPerKWh = 0.12; // This is a realistic average cost
 const moneySaved = lastMonthUsage * costPerKWh;
-document.getElementById('money-saved').innerText = `$${moneySaved.toFixed(2)}`;
+document.getElementById('money-saved').innerText = `€${moneySaved.toFixed(2)}`;
 
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+    try {
+      const response = await fetch('/api/username', {
+        credentials: 'same-origin' // Ensures cookies are sent with the request
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('username').textContent = data.username;
+      } else {
+        console.error("Error: Not logged in or session expired.");
+      }
+    } catch (error) {
+      console.error("Error fetching username:", error);
+    }
+  });

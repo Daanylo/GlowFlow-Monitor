@@ -16,7 +16,8 @@
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "luxon": "^3.5.0",
-    "mysql2": "^3.11.4"
+    "mysql2": "^3.11.4",
+    "serve-favicon": "^2.5.0"
   },
   "description": ""
 }

@@ -1,27 +1,21 @@
 import mysql from 'mysql2/promise.js';
-import express from 'express'; 
-import path from 'path'; 
+import express from 'express';
+import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
+import favicon from 'serve-favicon';
 
 // Database connectie
 let connection;
-// Definieert het pad naar index.js
 const __filename = fileURLToPath(import.meta.url);
-// Definieert de naam van de folder waar index.js in zit
 const __dirname = path.dirname(__filename);
-
-// Wijst de Express app toe aan constante 'app'
 const app = express();
 
-// Module die json omzet in js objects en andersom
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.json());
-// Module die een pad definieert naar de public folder
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use(express.urlencoded({ extended: true }));
 
-// Database configuratie
 const dbConfig = {
     host: '192.168.154.189',
     user: 'daan',
@@ -29,7 +23,7 @@ const dbConfig = {
     database: 'glowflow'
 };
 
-// Maakt verbinding met database
+// Maakt verbinding met de database
 async function connectToDatabase() {
   try {
     connection = await mysql.createConnection(dbConfig);
@@ -39,42 +33,40 @@ async function connectToDatabase() {
   }
 }
 
-app.post('/api/start-mock-data', (req, res) => {
-  mockData.startMockDataGeneration();
-  res.json({ message: 'Mock data generation started' });
-});
-
 app.use(session({
-  secret: 'your_secret_key', // Change to a strong secret in production
+  secret: 'your_secret_key',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // Set to true if using HTTPS
+  cookie: { secure: false }
 }));
 
+// Verifieert of gebruiker is ingelogd; anders omleiden naar login
 function ensureAuthenticated(req, res, next) {
-  if (req.session.userId) {
-      return next();
-  }
+  if (req.session.userId) return next();
   res.redirect('/login');
 }
 
-// Wordt geroepen wanneer een GET-request gestuurd wordt naar /reports
-// Stuurt het reports.html bestand terug
+// Laadt monitorpagina als gebruiker is ingelogd
 app.get('/monitor', (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/login'); // Redirect to login if not authenticated
-  }
+  if (!req.session.userId) return res.redirect('/login');
   res.sendFile(path.join(__dirname, 'public', 'reports.html'));
 });
 
-app.get('/login', async (req, res) => {
-  try {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
-  } catch (error) {
-    res.status(500).send("Error loading the HTML file");
+// Controleert ingelogde gebruiker
+app.get('/api/username', (req, res) => {
+  if (req.session.username) {
+    res.json({ username: req.session.username });
+  } else {
+    res.status(401).json({ error: 'Not logged in' });
   }
 });
 
+// Laadt loginpagina
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Verwerkt login-aanvraag
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -89,9 +81,9 @@ app.post('/login', async (req, res) => {
     );
 
     if (rows.length > 0) {
-      // Store user ID in session and redirect to /monitor
       req.session.userId = rows[0].id;
-      req.session.networkId = rows[0].network_id; // Store network_id for later use
+      req.session.networkId = rows[0].network_id;
+      req.session.username = rows[0].username;
       return res.json({ success: true });
     } else {
       return res.status(401).json({ success: false, message: "Invalid username or password" });
@@ -102,9 +94,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-
-// Wordt geroepen wanneer een GET-request gestuurd wordt naar /api/reports
-// Stuurt de data uit database terug in json formaat
+// Haalt data uit database op en retourneert in JSON-formaat
 app.get('/api/reports', ensureAuthenticated, async (req, res) => {
   try {
       const networkId = req.session.networkId;
@@ -119,8 +109,7 @@ app.get('/api/reports', ensureAuthenticated, async (req, res) => {
   }
 });
 
-// Wordt geroepen wanneer er een POST-request ontvangen wordt op /api/reports
-// Zet de json data om naar een sql query en voegt de data toe aan de database
+// Verwerkt nieuwe data en voegt deze toe aan de database
 app.post('/api/reports', async (req, res) => {
   const { datetime, voltage, amperage, network_id } = req.body;
   if (!datetime || !voltage || !amperage || !network_id) {
@@ -145,30 +134,26 @@ app.post('/api/reports', async (req, res) => {
   }
 });
 
+// Verwerkt uitlog-aanvraag en vernietigt de sessie
 app.post('/logout', (req, res) => {
-  // Destroy the session and redirect to the login page
   req.session.destroy((err) => {
     if (err) {
       console.error("Error logging out:", err);
       return res.status(500).send("Error logging out");
     }
-    res.redirect('/login'); // Redirect to login page after logout
+    res.redirect('/login');
   });
 });
 
-
-// Wijst poort 3000 toe aan variabele PORT, tenzij process.env.PORT een andere poort bevat
 const PORT = process.env.PORT || 3000;
 
-// Wordt geroepen wanneer Express server start. Gaat luisteren naar HTTP requests op poort 3000
-// Wacht met voltooien totdat verbinding met database is gelegd
+// Start de Express-server op en maakt verbinding met de database
 app.listen(PORT, async () => {
   await connectToDatabase();
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
-// Wordt geroepen wannneer "signal interrupt" event ontvangen wordt (ctrl+c in terminal)
-// Wacht met afsluiten node.js proces totdat database connectie veilig is gesloten
+// Sluit de databaseconnectie bij beëindiging van de server
 process.on('SIGINT', async () => {
   if (connection) {
     await connection.end();

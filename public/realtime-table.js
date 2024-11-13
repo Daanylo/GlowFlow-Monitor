@@ -11,6 +11,7 @@ async function fetchReports() {
     updateLastHourChart(reportData);
     updateInfoBar(reportData);
     updateLastYearChart(reportData);
+    updateLast24HourChart(reportData);
   } catch (error) {
     console.error('Error fetching the data:', error);
   }
@@ -51,6 +52,7 @@ window.onload = function () {
   initializeChart();
   initializeLastHourChart();
   initializeLastYearChart();
+  initializeLast24HourChart();
   fetchReports();
   setInterval(fetchReports, 1000); 
 }
