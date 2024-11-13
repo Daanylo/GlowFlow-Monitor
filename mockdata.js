@@ -3,10 +3,10 @@ import mysql from 'mysql2/promise';
 
 // Setup MySQL connection
 const connection = await mysql.createConnection({
-    host: '192.168.154.189',
+    host: '34.70.180.208',
     user: 'daan',
-    password: 'Daanpassword@22',
-    database: 'glowflow'
+    password: 'Daanww@22',
+    database: 'streetlight_db'
 });
 
 // Function to generate random values

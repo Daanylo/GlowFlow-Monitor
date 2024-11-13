@@ -4,7 +4,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import favicon from 'serve-favicon';
-import fs from 'fs';
 
 // Database connectie
 let connection;
@@ -17,11 +16,18 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
+// const dbConfig = {
+//     host: 'sql7.freemysqlhosting.net',
+//     user: 'sql7744543',
+//     password: '1hhmCLXW2Q',
+//     database: 'sql7744543',
+// };
+
 const dbConfig = {
-    host: 'sql7.freemysqlhosting.net',
-    user: 'sql7744543',
-    password: '1hhmCLXW2Q',
-    database: 'sql7744543',
+  host: '34.70.180.208',
+  user: 'daan',
+  password: 'Daanww@22',
+  database: 'streetlight_db',
 };
 
 // const dbConfig = {
@@ -119,19 +125,22 @@ app.get('/api/reports', ensureAuthenticated, async (req, res) => {
 
 // Verwerkt nieuwe data en voegt deze toe aan de database
 app.post('/api/reports', async (req, res) => {
-  const { datetime, voltage, amperage, network_id } = req.body;
-  if (!datetime || !voltage || !amperage || !network_id) {
+  const { voltage, amperage, network_id } = req.body;
+  if (!voltage || !amperage || !network_id) {
       return res.status(400).send('Missing required fields');
   }
   try {
       if (!connection) {
           return res.status(500).send('Database connection not established');
       }
+      const localDate = new Date();
+      const timezoneOffset = localDate.getTimezoneOffset(); // Get timezone offset in minutes
+      const localDatetime = new Date(localDate.getTime() - timezoneOffset * 60000).toISOString().slice(0, 19).replace('T', ' ');
       const query = 'INSERT INTO report (datetime, voltage, amperage, network_id) VALUES (?, ?, ?, ?)';
-      const [result] = await connection.execute(query, [datetime, voltage, amperage, network_id]);
+      const [result] = await connection.execute(query, [localDatetime, voltage, amperage, network_id]);
       res.status(201).json({ 
         id: result.insertId, 
-        datetime, 
+        localDate, 
         voltage, 
         amperage,
         network_id
