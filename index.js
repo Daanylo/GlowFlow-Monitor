@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import favicon from 'serve-favicon';
+import fs from 'fs';
 
 // Database connectie
 let connection;
@@ -17,11 +18,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
 const dbConfig = {
-    host: '192.168.154.189',
-    user: 'daan',
-    password: 'Daanpassword@22',
-    database: 'glowflow'
+    host: 'sql7.freemysqlhosting.net',
+    user: 'sql7744543',
+    password: '1hhmCLXW2Q',
+    database: 'sql7744543',
 };
+
+// const dbConfig = {
+//   host: '192.168.154.189',
+//   user: 'daan',
+//   password: 'Daanpassword@22',
+//   database: 'glowflow',
+// };
 
 // Maakt verbinding met de database
 async function connectToDatabase() {
