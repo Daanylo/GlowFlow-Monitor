@@ -5,6 +5,12 @@ async function fetchReports() {
   try {
     const response = await fetch('/api/reports');
     const data = await response.json();
+    data.forEach(row => {
+      const localDate = new Date(row.datetime);
+      const timezoneOffset = localDate.getTimezoneOffset(); // Get timezone offset in minutes
+      const localDatetime = new Date(localDate.getTime() - timezoneOffset * 60000).toISOString().slice(0, 19).replace('T', ' ');
+      row.datetime = localDatetime;
+    })
     reportData = data;
     updateTable();
     updateChart();
@@ -19,7 +25,7 @@ async function fetchReports() {
 
 function formatDate(dateString) {
   const date = new Date(dateString);
-  return date.toLocaleString('en-GB', {
+  return date.toLocaleString('nl-NL', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
