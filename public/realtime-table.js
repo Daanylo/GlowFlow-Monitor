@@ -40,7 +40,7 @@ function updateTable() {
     const rowElement = document.createElement('tr');
     rowElement.innerHTML = `
       <td>${row.id}</td>
-      <td>${formatDate(row.datetime).slice(10)}</td>
+      <td>${formatDate(row.datetime)}</td>
       <td>${(row.voltage * row.amperage).toFixed(2)}</td>
     `;
     tableBody.appendChild(rowElement);

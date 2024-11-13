@@ -134,10 +134,8 @@ app.post('/api/reports', async (req, res) => {
           return res.status(500).send('Database connection not established');
       }
       const localDate = new Date();
-      const timezoneOffset = localDate.getTimezoneOffset(); // Get timezone offset in minutes
-      const localDatetime = new Date(localDate.getTime() - timezoneOffset * 60000).toISOString().slice(0, 19).replace('T', ' ');
       const query = 'INSERT INTO report (datetime, voltage, amperage, network_id) VALUES (?, ?, ?, ?)';
-      const [result] = await connection.execute(query, [localDatetime, voltage, amperage, network_id]);
+      const [result] = await connection.execute(query, [localDate, voltage, amperage, network_id]);
       res.status(201).json({ 
         id: result.insertId, 
         localDate, 
