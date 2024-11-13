@@ -36,7 +36,6 @@ document.getElementById('last-month-usage').innerText = `${lastMonthUsage.toFixe
 const costPerKWh = 0.12; // This is a realistic average cost
 const moneySaved = lastMonthUsage * costPerKWh;
 document.getElementById('money-saved').innerText = `€${moneySaved.toFixed(2)}`;
-
 }
 
 document.addEventListener("DOMContentLoaded", async () => {

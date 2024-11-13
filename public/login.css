@@ -21,10 +21,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgb(14, 24, 20);
     margin: auto;
-    padding: 20px 40px;
-    border-radius: 20px;
 }
 
 label {

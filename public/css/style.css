@@ -1,0 +1,591 @@
+body{
+    margin: 0;
+    background-color: #10454F;
+    font-family: Arial, sans-serif;
+}
+
+/* home */
+
+.HomeImageContainer{
+    display: flex;
+    justify-content: center;
+    margin-top: 75px;
+}
+
+.HomeImageText{
+    position: absolute;
+    left: 30px;
+    bottom: 200px;
+    width: 90%;
+    z-index: 99;
+}
+
+.HomeImageText h3{
+    color: white;
+    font-size: 15px;
+    font-weight: lighter;
+    margin-bottom: 40px;
+}
+
+.HomeimageButton{
+    color: #F29F05;
+    border: solid 2px #F29F05;
+    border-radius: 50px;
+    padding: 10px 20px;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+.DiscoverText{
+    color: white;
+    margin-bottom: 20px;
+}
+
+.GlowFlowText{
+    color: #f29f05a9;
+    font-weight: bold;
+    font-size: 40px;
+    margin: 0;
+    margin-bottom: 10px;
+}
+
+.CountingNumbers{
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 150px;
+    text-align: center;
+    color: #F29F05;
+}
+
+.OutsideContainer{
+    margin-top: 50px;
+}
+
+.NumbersKind{
+    margin: 0;
+}
+
+.CountingNumbersimage{
+    width: 75px;
+}
+
+.CountingNumberContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    gap: 5px;
+}
+
+.CountingNumber{
+    color: white;
+}
+
+.ImagesContainer{
+    background-color: #F29F05;
+    width: 90%;
+    border-radius: 50px;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+.ProductHomeContainer{
+    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ProductHomeContainer p{
+    color: #F29F05;
+    width: 70%;
+}
+
+.SensorImage{
+    width: 200px;
+}
+
+.MoreInfoButton{
+    text-decoration: none;
+    color: #F29F05;
+    border: solid 2px #F29F05;
+    border-radius: 50px;
+    padding: 10px 50px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* login / registreer pagina */
+.container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.LoginLogoContainer{
+    display: flex;
+    justify-content: center;
+}
+
+.logo{
+    width: 200px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.signin-form{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.signin-form input{
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    background-color: #ffffff;
+    color: #10454F;
+}
+
+.signin-form button{
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background-color: #F29F05;
+    font-size: 16px;
+    cursor: pointer;
+    color: #10454F;
+}
+
+input::placeholder{
+    color: #10454F;
+    font-style: italic;
+    font-size: 15px;
+    padding-left: 20px;
+}
+
+textarea::placeholder{
+    color: #10454F;
+    font-family: Arial, sans-serif;
+    font-style: italic;
+    font-size: 15px;
+    padding-left: 20px;
+    padding-top: 20px;
+}
+
+.forgot-password{
+    font-size: 12px;
+    color: #F29F05;
+    text-decoration: none;
+    display: block;
+}
+
+.signup-link {
+    font-size: 12px;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+}
+.signup-link p{
+    position: absolute;
+    bottom: 20px;
+}
+.signup-link a {
+    color: #F29F05;
+    text-decoration: underline;
+}
+
+
+
+
+
+.about-section {
+    background-color: #F29F05;
+    border-radius: 25px;
+    padding: 20px;
+    color: #10454F;
+    text-align: center;
+}
+
+.AboutUsContainer{
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 75px;
+}
+
+.about-section p {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.team-member {
+    background-color: #F29F05;
+    border-radius: 25px;
+    padding: 20px;
+    color: #10454F;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 50px;
+}
+
+.team-member:nth-child(odd) {
+    background-color: #F29F05;
+}
+
+.team-member:nth-child(even) {
+    background-color: transparent;
+    color: #F29F05;
+}
+
+.team-member:nth-child(odd) .ImgNameContainer h3 {
+    color: #10454F;
+}
+
+.team-member:nth-child(even) .ImgNameContainer h3 {
+    color: #F29F05;
+}
+
+.ImgNameContainer{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.team-member h3 {
+    font-size: 25px;
+    color: #10454F;
+    margin-bottom: 10px;
+    text-align: start;
+}
+
+.team-member p {
+    font-size: 15px;
+    color: white;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.social-icons a img {
+    width: 50px;
+    height: 50px;
+}
+
+
+
+
+
+
+
+/* Product pagina */
+.product-container {
+    max-width: 90%;
+    margin: 0 auto;
+    margin-top: 75px;
+}
+
+.product-container h1, .product-container h2, .product-container h3 {
+    color: #F29F05;
+    margin-bottom: 10px;
+}
+
+.product-container p, .product-container ul {
+    line-height: 1.6;
+    color: white;
+}
+
+.product-container h2{
+    color: white;
+}
+
+.product-container h3{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ArrowDropdown {
+    width: 20px;
+    display: inline-block;
+    transform: rotate(-90deg);
+    transition: transform 0.3s;
+}
+
+.content{
+    display: none;
+}
+
+.usage-scenarios ul {
+    list-style: none;
+    padding: 0;
+}
+
+.usage-scenarios ul li {
+    background-color: #F29F05;
+    color: #10454F;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 8px;
+}
+
+.usage-scenarios ul li strong {
+    color: #ffffff;
+}
+
+
+
+
+
+
+
+
+
+
+.faq-question::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    border-right: 3px solid;
+    border-top: 3px solid;
+    transform: rotate(45deg);
+    position: absolute;
+    right: 35px;
+    border-radius: 3px;
+    transition: transform 0.3s; /* Voeg transitie toe */
+}
+
+.faq-item:nth-of-type(odd) .faq-question::after {
+    border-color: #10454F;
+}
+
+.faq-item:nth-of-type(even) .faq-question::after {
+    border-color: white;
+}
+
+input[type="checkbox"]:checked + .faq-question::after {
+    transform: rotate(135deg); /* Rotatie toevoegen bij klikken */
+}
+
+
+
+/* contact pagina */
+.contactPageContainer{
+    margin-top: 75px;
+}
+
+.contact-form-section {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.contact-form-section h2{
+    color: #F29F05;
+}
+
+.contact-form label {
+    display: block;
+    margin-top: 10px;
+    color: #F29F05;
+}
+
+.contact-form input{
+    width: 47%;
+    padding: 20px 0px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    font-size: 15px;
+}
+
+#email{
+    width: 100%;
+    padding: 0;
+    height: 60px;
+}
+
+#phone{
+    width: 100%;
+    padding: 0;
+    height: 60px;
+}
+
+.contact-form button {
+    background-color: transparent;
+    color: #F29F05;
+    margin: 15px 0;
+    padding: 15px;
+    font-size: 20px;
+    border: solid 2px;
+    border-radius: 50px;
+    width: 100%;
+}
+
+.contact-form button:hover {
+    background-color: #F29F05;
+    color: #10454F;
+}
+
+.ContactFormName{
+    display: flex;
+    justify-content: space-between;
+}
+
+.contact-form textarea{
+    width: 100%;
+    height: 150px;
+    padding: 0;
+    margin: 15px 0;
+    border-radius: 20px;
+    border: none;
+}
+
+.faq-section {
+    width: 90%;
+    margin: auto;
+    color: #fff;
+    margin-top: 50px;
+}
+
+.faq-item {
+    margin-bottom: 10px;
+    border: 2px solid #10454F;
+    overflow: hidden;
+}
+
+.faq-item input[type="checkbox"] {
+    display: none;
+}
+
+.faq-item:nth-child(odd) .faq-question {
+    color: white;
+}
+
+.faq-item:nth-child(even) .faq-question {
+    background-color: #F29F05;
+    color: #10454F;
+}
+
+.faq-item:nth-child(odd) .faq-answer {
+    background-color: #F29F05;
+    color: #10454F;
+}
+
+.faq-question {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    border-radius: 10px;
+    height: 60px;
+}
+
+.Faq-QuestionContainer{
+    width: 275px;
+}
+
+.faq-question img.faq-arrow {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+    rotate: 270deg;
+    transition: transform 0.3s;
+}
+
+.faq-item input[type="checkbox"]:checked + .faq-question img.faq-arrow {
+ rotate: 0deg ;
+}
+
+
+
+.faq-answer {
+    display: block;
+    overflow: hidden;
+    height: 0;
+    transition: height 0.3s ease-out, padding 0.3s ease-out;
+    padding: 0 20px;
+}
+
+.faq-item input[type="checkbox"]:checked + label + .faq-answer {
+    height: auto; /* Laat de hoogte automatisch aanpassen */
+    padding: 10px 20px; /* Voeg wat padding toe wanneer de dropdown zichtbaar is */
+}
+
+
+.faq-item input[type="checkbox"]:checked ~ .faq-answer {
+    display: block;
+}
+
+
+
+
+
+
+
+.SwiperImageContainer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.SwiperImageGradient {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0%) 0%, rgb(0 0 0) 100%);
+    z-index: 1;
+}
+
+.SwiperImage {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    z-index: 0;
+}
+
+.swiper{
+    height: 90vh;
+}
+
+
+
+.swiper-pagination-bullet{
+    background-color: #10454F !important;
+    opacity: 1 !important;
+}
+
+.swiper-pagination-bullet-active {
+    background-color: #F29F05 !important;
+}
+
+.swiper-pagination{
+    margin-top: -50px;
+    position: relative !important;
+}

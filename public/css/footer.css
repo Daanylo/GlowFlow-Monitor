@@ -1,0 +1,95 @@
+footer{
+    width: 90%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+.FooterLogoContainer{
+    display: flex;
+    justify-content: center;
+}
+
+.FooterLogo{
+    width: 150px;
+    margin-top: 20px;
+    margin-bottom: 40px;
+}
+
+
+.FooterContentContainer{
+    display: flex;
+    justify-content: space-between;
+}
+
+.FooterQuickLinks{
+    display: flex;
+    flex-direction: column;
+}
+
+.FooterQuickLinks a{
+    color: #F29F05;
+    text-decoration: none;
+    margin: 10px 0;
+    font-size: 15px;
+    font-weight: lighter;
+}
+
+.FooterContactContainer{
+    display: flex;
+    flex-direction: column;
+}
+
+.FooterContactContainer h3{
+    color: #F29F05;
+    font-size: 15px;
+    font-weight: lighter;
+    margin: 10px 0;
+}
+
+.FooterContactContainer input{
+    border-radius: 50px;
+    padding: 10px 10px;
+    border: none;
+    margin-bottom: 15px;
+    width: 120px;
+    resize: both;
+}
+
+.FooterH2{
+    color: white;
+}
+
+.hyperlinksFooter.active{
+    color: white;
+    text-decoration: underline;
+}
+
+.SubmitButton{
+    border: solid 2px #F29F05;
+    border-radius: 50px;
+    background-color: transparent;
+    color: #F29F05;
+    width: 100px;
+    padding: 5px;
+}
+
+.PhoneNumber{
+    color: inherit;
+}
+
+.FooterBottomInfo{
+    display: flex;
+    justify-content: space-between;
+    color: #F29F05;
+    text-decoration: underline;
+    margin-top: 75px;
+}
+
+.FooterCopyright{
+    font-size: 10px;
+    margin-bottom: 20px;
+}
+
+.FooterBottomLinks h2{
+    font-size: 10px;
+}
