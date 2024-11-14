@@ -1,9 +1,13 @@
+import bcrypt from 'bcrypt';
 import mysql from 'mysql2/promise.js';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import favicon from 'serve-favicon';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 // Database connectie
 let connection;
@@ -15,28 +19,21 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
 
-// const dbConfig = {
-//     host: 'sql7.freemysqlhosting.net',
-//     user: 'sql7744543',
-//     password: '1hhmCLXW2Q',
-//     database: 'sql7744543',
-// };
-
+// Database configuratie
 const dbConfig = {
   host: '34.70.180.208',
   user: 'daan',
-  password: 'Daanww@22',
+  password: process.env.DB_PASSWORD,
   database: 'streetlight_db',
   timezone: process.env.NODE_ENV === 'production' ? 'Z' : '+01:00',
 };
-
-// const dbConfig = {
-//   host: '192.168.154.189',
-//   user: 'daan',
-//   password: 'Daanpassword@22',
-//   database: 'glowflow',
-// };
 
 // Maakt verbinding met de database
 async function connectToDatabase() {
@@ -47,13 +44,6 @@ async function connectToDatabase() {
     console.error("Error connecting to MySQL database:", error);
   }
 }
-
-app.use(session({
-  secret: 'your_secret_key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false }
-}));
 
 // Verifieert of gebruiker is ingelogd; anders omleiden naar login
 function ensureAuthenticated(req, res, next) {
@@ -81,6 +71,10 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+app.get('/', (req, res) => {
+  res.redirect('/login');
+})
+
 // Verwerkt login-aanvraag
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -91,15 +85,23 @@ app.post('/login', async (req, res) => {
 
   try {
     const [rows] = await connection.execute(
-      'SELECT * FROM user WHERE username = ? AND password = ?',
-      [username, password]
+      'SELECT id, username, password, network_id FROM user WHERE username = ?',
+      [username]
     );
-
+    
     if (rows.length > 0) {
-      req.session.userId = rows[0].id;
-      req.session.networkId = rows[0].network_id;
-      req.session.username = rows[0].username;
-      return res.json({ success: true });
+      const user = rows[0];
+
+      const storedPasswordHash = user.password.toString();
+      const isMatch = await bcrypt.compare(password, storedPasswordHash);     
+      if (isMatch) {
+        req.session.userId = user.id;
+        req.session.networkId = user.network_id;
+        req.session.username = user.username;
+        return res.json({ success: true });
+      } else {
+        return res.status(401).json({ success: false, message: "Invalid username or password" });
+      }
     } else {
       return res.status(401).json({ success: false, message: "Invalid username or password" });
     }
@@ -168,12 +170,6 @@ app.listen(PORT, async () => {
   await connectToDatabase();
   console.log(`Server is running on http://localhost:${PORT}`);
 });
-
-// app.listen(80, async () => {
-//   await connectToDatabase();
-//   console.log('Server running on http://localhost:80');
-// });
-
 
 // Sluit de databaseconnectie bij beëindiging van de server
 process.on('SIGINT', async () => {
