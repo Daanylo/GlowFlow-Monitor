@@ -19,7 +19,6 @@ async function fetchReports() {
 
 function formatDate(dateString) {
   const date = new Date(dateString);
-  date = new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
   return date.toLocaleString('en-GB', {
     year: 'numeric',
     month: '2-digit',
@@ -30,6 +29,7 @@ function formatDate(dateString) {
     hour12: false
   }).replace(',', '');
 }
+
 function updateTable() {
   const tableBody = document.querySelector("#report-table tbody");
   tableBody.innerHTML = '';
