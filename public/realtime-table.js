@@ -19,8 +19,7 @@ async function fetchReports() {
 
 function formatDate(dateString) {
   const date = new Date(dateString);
-  date.setTime(date.getTime() - (1 * 60 * 60 * 1000));
-  return date.toLocaleString('nl-NL', {
+  return date.toLocaleString('en-GB', {
     year: 'numeric',
     month: '2-digit',
     day: '2-digit',
