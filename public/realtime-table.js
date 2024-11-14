@@ -19,7 +19,6 @@ async function fetchReports() {
 
 function formatDate(dateString) {
   const date = new Date(dateString);
-  date.setHours(date.getHours() - 1);
   return date.toLocaleString('nl-NL', {
     year: 'numeric',
     month: '2-digit',

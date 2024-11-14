@@ -11,8 +11,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
-
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -165,10 +163,16 @@ app.post('/logout', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 // Start de Express-server op en maakt verbinding met de database
-app.listen(PORT, async () => {
+// app.listen(PORT, async () => {
+//   await connectToDatabase();
+//   console.log(`Server is running on http://localhost:${PORT}`);
+// });
+
+app.listen(80, async () => {
   await connectToDatabase();
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log('Server running on http://localhost:80');
 });
+
 
 // Sluit de databaseconnectie bij beëindiging van de server
 process.on('SIGINT', async () => {
