@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import mysql from 'mysql2/promise.js';
 import express from 'express';
 import path from 'path';
