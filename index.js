@@ -163,15 +163,15 @@ app.post('/logout', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 // Start de Express-server op en maakt verbinding met de database
-// app.listen(PORT, async () => {
-//   await connectToDatabase();
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
-
-app.listen(80, async () => {
+app.listen(PORT, async () => {
   await connectToDatabase();
-  console.log('Server running on http://localhost:80');
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
+
+// app.listen(80, async () => {
+//   await connectToDatabase();
+//   console.log('Server running on http://localhost:80');
+// });
 
 
 // Sluit de databaseconnectie bij beëindiging van de server
