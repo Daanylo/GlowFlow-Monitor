@@ -1,15 +1,15 @@
 // Global variable where the report data is stored
-let chart;
+let realtime_chart;
 
-function initializeChart() {
+async function initializeRealtimeChart() {
     const canvas = document.getElementById('wattage-chart');
     const ctx = canvas.getContext('2d');
 
-    if (chart) {
-        chart.destroy();
+    if (realtime_chart) {
+        realtime_chart.destroy();
     }
 
-    chart = new Chart(ctx, {
+    realtime_chart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: [], // Will be populated with timestamps later
@@ -71,11 +71,13 @@ function initializeChart() {
             }
         }
     });
+    const reportData = await getReportsLast60Seconds();
+    updateRealtimeChart(reportData);
 }
 
 // Update the chart
-function updateChart() {
-    if (!reportData || reportData.length === 0 || !chart) {
+function updateRealtimeChart(reportData) {
+    if (!reportData || reportData.length === 0 || !realtime_chart) {
         return;
     }
 
@@ -122,9 +124,9 @@ function updateChart() {
     }
 
     // Update the chart with the new labels and data
-    chart.data.labels = labels;
-    chart.data.datasets[0].data = data;
-    chart.update();
+    realtime_chart.data.labels = labels;
+    realtime_chart.data.datasets[0].data = data;
+    realtime_chart.update();
 }
 
 

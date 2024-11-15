@@ -2,7 +2,7 @@
 let last24HourChart;
 
 // Initialiseer de 24-uurs grafiek en stel labels in voor de afgelopen 24 uur
-function initializeLast24HourChart() {
+async function initializeLast24HourChart() {
     const canvas = document.getElementById('last24h-chart');
     const ctx = canvas.getContext('2d');
 
@@ -22,7 +22,7 @@ function initializeLast24HourChart() {
         data: {
             labels: labels,
             datasets: [{
-                label: 'Gemiddeld stroomverbruik (kWh)',
+                label: 'Average Power Usage (kWh)',
                 data: Array(24).fill(0),
                 backgroundColor: 'rgba(255, 196, 0, 0.2)',
                 borderColor: 'rgba(255, 196, 0, 1)',
@@ -36,7 +36,7 @@ function initializeLast24HourChart() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Uur'
+                        text: 'Hour'
                     },
                     grid: {
                         display: false
@@ -45,7 +45,7 @@ function initializeLast24HourChart() {
                 y: {
                     title: {
                         display: true,
-                        text: 'Stroomverbruik (kWh)'
+                        text: 'Power Usage (kWh)'
                     },
                     ticks: {
                         beginAtZero: true,
@@ -62,6 +62,8 @@ function initializeLast24HourChart() {
             }
         }
     });
+    const reportData = await getReportsLast24Hours();
+    updateLast24HourChart(reportData);
 }
 
 // Werk de 24-uurs grafiek bij met nieuwe gemiddelde waarden per uur
@@ -73,10 +75,18 @@ function updateLast24HourChart(reportData) {
     const now = new Date();
     const groupedData = new Map();
 
-    // Groepeer datapunten per uur voor de afgelopen 24 uur
-    reportData.forEach(row => {
+    // Filter reportData to include only entries from the last 24 hours
+    const last24HoursData = reportData.filter(row => {
         const rowTime = new Date(row.datetime);
-        const hourLabel = rowTime.toLocaleTimeString('default', { hour: '2-digit', minute: '2-digit' });
+        return (now - rowTime) <= 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+    });
+
+    // Groepeer datapunten per uur voor de afgelopen 24 uur
+    last24HoursData.forEach(row => {
+        const rowTime = new Date(row.datetime);
+        // Normalize to start of the hour
+        rowTime.setMinutes(0, 0, 0); // Set minutes, seconds, and milliseconds to 0
+        const hourLabel = rowTime.toLocaleTimeString('default', { hour: '2-digit' });
 
         if (!groupedData.has(hourLabel)) {
             groupedData.set(hourLabel, []);
@@ -87,11 +97,12 @@ function updateLast24HourChart(reportData) {
         groupedData.get(hourLabel).push(wattage);
     });
 
-    // Genereer labels opnieuw voor consistentie
+    // Genereer labels opnieuw voor consistentie (for the last 24 hours)
     const labels = Array.from({ length: 24 }, (_, i) => {
         const date = new Date();
         date.setHours(date.getHours() - (23 - i));
-        return date.toLocaleTimeString('default', { hour: '2-digit', minute: '2-digit' });
+        date.setMinutes(0, 0, 0); // Normalize to the start of the hour
+        return date.toLocaleTimeString('default', { hour: '2-digit' });
     });
 
     // Werk de grafiekgegevens bij met de nieuwe gemiddelde waarden per uur
@@ -107,3 +118,4 @@ function updateLast24HourChart(reportData) {
 
     last24HourChart.update();
 }
+
