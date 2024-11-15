@@ -1,7 +1,7 @@
 // Global variable for the chart
 let lastYearChart;
 
-function initializeLastYearChart() {
+async function initializeLastYearChart() {
     const canvas = document.getElementById('lastyear-chart');
     const ctx = canvas.getContext('2d');
 
@@ -61,6 +61,8 @@ function initializeLastYearChart() {
             }
         }
     });
+    const reportData = await getReportsLast1Year();
+    updateLastYearChart(reportData);
 }
 
 function updateLastYearChart(reportData) {

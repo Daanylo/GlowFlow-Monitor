@@ -1,7 +1,7 @@
 // Global variable for the chart
 let lasthour_chart;
 
-function initializeLastHourChart() {
+async function initializeLastHourChart() {
     const canvas = document.getElementById('lasthour-chart');
     const ctx = canvas.getContext('2d');
 
@@ -62,6 +62,8 @@ function initializeLastHourChart() {
             }
         }
     });
+    const reportData = await getReportsLast1Hour();
+    updateLastHourChart(reportData);
 }
 
 function updateLastHourChart(reportData) {

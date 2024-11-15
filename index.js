@@ -1,10 +1,13 @@
+import bcrypt from 'bcryptjs';
 import mysql from 'mysql2/promise.js';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import favicon from 'serve-favicon';
-import fs from 'fs';
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 // Database connectie
 let connection;
@@ -16,20 +19,21 @@ app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
 
+// Database configuratie
 const dbConfig = {
-    host: 'sql7.freemysqlhosting.net',
-    user: 'sql7744543',
-    password: '1hhmCLXW2Q',
-    database: 'sql7744543',
+  host: '34.70.180.208',
+  user: 'daan',
+  password: process.env.DB_PASSWORD,
+  database: 'streetlight_db',
+  timezone: process.env.NODE_ENV === 'production' ? 'Z' : '+01:00',
 };
-
-// const dbConfig = {
-//   host: '192.168.154.189',
-//   user: 'daan',
-//   password: 'Daanpassword@22',
-//   database: 'glowflow',
-// };
 
 // Maakt verbinding met de database
 async function connectToDatabase() {
@@ -40,13 +44,6 @@ async function connectToDatabase() {
     console.error("Error connecting to MySQL database:", error);
   }
 }
-
-app.use(session({
-  secret: 'your_secret_key',
-  resave: false,
-  saveUninitialized: false,
-  cookie: { secure: false }
-}));
 
 // Verifieert of gebruiker is ingelogd; anders omleiden naar login
 function ensureAuthenticated(req, res, next) {
@@ -74,6 +71,10 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
+app.get('/', (req, res) => {
+  res.redirect('/login');
+})
+
 // Verwerkt login-aanvraag
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -84,15 +85,23 @@ app.post('/login', async (req, res) => {
 
   try {
     const [rows] = await connection.execute(
-      'SELECT * FROM user WHERE username = ? AND password = ?',
-      [username, password]
+      'SELECT id, username, password, network_id FROM user WHERE username = ?',
+      [username]
     );
-
+    
     if (rows.length > 0) {
-      req.session.userId = rows[0].id;
-      req.session.networkId = rows[0].network_id;
-      req.session.username = rows[0].username;
-      return res.json({ success: true });
+      const user = rows[0];
+
+      const storedPasswordHash = user.password.toString();
+      const isMatch = await bcrypt.compare(password, storedPasswordHash);     
+      if (isMatch) {
+        req.session.userId = user.id;
+        req.session.networkId = user.network_id;
+        req.session.username = user.username;
+        return res.json({ success: true });
+      } else {
+        return res.status(401).json({ success: false, message: "Invalid username or password" });
+      }
     } else {
       return res.status(401).json({ success: false, message: "Invalid username or password" });
     }
@@ -105,33 +114,66 @@ app.post('/login', async (req, res) => {
 // Haalt data uit database op en retourneert in JSON-formaat
 app.get('/api/reports', ensureAuthenticated, async (req, res) => {
   try {
-      const networkId = req.session.networkId;
-      const [rows] = await connection.execute(
-          'SELECT id, datetime, voltage, amperage FROM report WHERE network_id = ?',
-          [networkId]
-      );
-      res.json(rows);
+    const networkId = req.session.networkId;
+    const { startTime, endTime } = req.query;
+    if (!startTime || !endTime) {
+      return res.status(400).json({ success: false, message: 'startTime and endTime are required' });
+    }
+    const query = `
+      SELECT id, datetime, voltage, amperage 
+      FROM report 
+      WHERE network_id = ? 
+        AND datetime BETWEEN ? AND ?
+    `;
+    const [rows] = await connection.execute(query, [networkId, startTime, endTime]);
+    res.json(rows);
   } catch (error) {
-      console.error("Error fetching data:", error);
-      res.status(500).send("Error fetching data");
+    console.error("Error fetching data:", error);
+    res.status(500).send("Error fetching data");
   }
 });
 
+app.get('/api/reports/latest', async (req, res) => {
+  const networkId = req.session.networkId;
+  
+  if (!networkId) {
+    return res.status(400).json({ error: "Network ID is not set in session" });
+  }
+
+  const query = `
+    SELECT id, datetime, voltage, amperage
+    FROM report
+    WHERE network_id = 1
+    ORDER BY datetime DESC
+    LIMIT 5
+  `;
+
+  try {
+    const [rows] = await connection.execute(query, [networkId]);
+    res.json(rows);
+  } catch (error) {
+    console.error("Error executing query:", error);
+    res.status(500).json({ error: "Error fetching latest reports from database" });
+  }
+});
+
+
 // Verwerkt nieuwe data en voegt deze toe aan de database
 app.post('/api/reports', async (req, res) => {
-  const { datetime, voltage, amperage, network_id } = req.body;
-  if (!datetime || !voltage || !amperage || !network_id) {
+  const { voltage, amperage, network_id } = req.body;
+  if (!voltage || !amperage || !network_id) {
       return res.status(400).send('Missing required fields');
   }
   try {
       if (!connection) {
           return res.status(500).send('Database connection not established');
       }
+      const localDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
       const query = 'INSERT INTO report (datetime, voltage, amperage, network_id) VALUES (?, ?, ?, ?)';
-      const [result] = await connection.execute(query, [datetime, voltage, amperage, network_id]);
+      const [result] = await connection.execute(query, [localDate, voltage, amperage, network_id]);
       res.status(201).json({ 
         id: result.insertId, 
-        datetime, 
+        localDate, 
         voltage, 
         amperage,
         network_id
