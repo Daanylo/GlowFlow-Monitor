@@ -24,9 +24,9 @@ async function initializeLast24HourChart() {
             datasets: [{
                 label: 'Average Power Usage (kWh)',
                 data: Array(24).fill(0),
-                backgroundColor: 'rgba(255, 196, 0, 0.2)',
-                borderColor: 'rgba(255, 196, 0, 1)',
-                borderWidth: 1
+                backgroundColor: 'white',
+                borderWidth: 1,
+                hoverBackgroundColor: '#0d3840'
             }]
         },
         options: {
@@ -36,7 +36,11 @@ async function initializeLast24HourChart() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Hour'
+                        text: 'Hour',
+                        color: 'white'
+                    },
+                    ticks: {
+                        color: '#f29f05'
                     },
                     grid: {
                         display: false
@@ -45,17 +49,20 @@ async function initializeLast24HourChart() {
                 y: {
                     title: {
                         display: true,
+                        color: 'white',
                         text: 'Power Usage (kWh)'
                     },
                     ticks: {
                         beginAtZero: true,
+                        color: '#f29f05',
                         stepSize: 10,
                         callback: function(value) {
                             return value.toFixed(1); // Formatteer de y-as waarden op 1 decimaal
                         }
                     },
                     grid: {
-                        display: true
+                        display: true,
+                        color: '#f29f05'
                     },
                     min: 0
                 }

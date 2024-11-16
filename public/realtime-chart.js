@@ -16,12 +16,12 @@ async function initializeRealtimeChart() {
             datasets: [{
                 label: 'Wattage (W)',
                 data: Array(31).fill(0), // Initial empty data
-                backgroundColor: 'rgba(255, 196, 0, 0.2)',
-                borderColor: 'rgba(255, 196, 0, 1)',
+                backgroundColor: 'white',
+                hoverBackgroundColor: '#0d3840',
                 borderWidth: 2,
                 fill: true, // Fill the area below the graph
                 tension: 0, // Smooth the line
-                pointRadius: 0, // Remove dots from the line
+                pointRadius: 0, // Remove dots from the line\
             }]
         },
         options: {
@@ -34,17 +34,23 @@ async function initializeRealtimeChart() {
                         unit: 'second', // Each tick is one second
                         tooltipFormat: 'll HH:mm:ss', // Tooltip format for readability
                     },
+                    ticks: {
+                        color: '#f29f05'
+                    },
                     title: {
                         display: true,
+                        color: 'white',
                         text: 'Time'
                     },
                     grid: {
                         display: false, // Hide the gridlines
+                        color: 'red'
                     }
                 },
                 y: {
                     ticks: {
                         beginAtZero: true,
+                        color: '#f29f05',
                         stepSize: 1, // Set a step size for readability
                         callback: function(value) {
                             return value.toFixed(1); // Format the y-axis numbers to 1 decimal place
@@ -52,10 +58,12 @@ async function initializeRealtimeChart() {
                     },
                     title: {
                         display: true,
+                        color: 'white',
                         text: 'Wattage (W)'
                     },
                     grid: {
                         display: false, // Hide the gridlines
+                        color: '#f29f05'
                     },
                     min: 0,
                     max: 10

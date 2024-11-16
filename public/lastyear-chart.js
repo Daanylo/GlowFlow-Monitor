@@ -22,10 +22,10 @@ async function initializeLastYearChart() {
             labels: labels,
             datasets: [{
                 label: 'Average Power Usage (kWh)',
-                data: Array(12).fill(0), // Initial empty data for 12 months
-                backgroundColor: 'rgba(255, 196, 0, 0.2)',
-                borderColor: 'rgba(255, 196, 0, 1)',
-                borderWidth: 1
+                data: Array(12).fill(0),
+                backgroundColor: 'white ',
+                borderWidth: 1,
+                hoverBackgroundColor: '#0d3840'
             }]
         },
         options: {
@@ -35,7 +35,11 @@ async function initializeLastYearChart() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Month'
+                        text: 'Month',
+                        color: 'white'
+                    },
+                    ticks: {
+                        color: '#f29f05'
                     },
                     grid: {
                         display: false
@@ -44,17 +48,20 @@ async function initializeLastYearChart() {
                 y: {
                     title: {
                         display: true,
+                        color: 'white',
                         text: 'Power Usage (kWh)'
                     },
                     ticks: {
                         beginAtZero: true,
+                        color: '#f29f05',
                         stepSize: 50, // Set an appropriate step size
                         callback: function(value) {
                             return value.toFixed(1); // Format the y-axis numbers to 1 decimal place
                         }
                     },
                     grid: {
-                        display: true
+                        display: true,
+                        color: '#f29f05'
                     },
                     min: 0
                 }

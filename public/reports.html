@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" type="image/x-icon" href="favicon.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GlowFlow Monitor</title>
+  <title>GlowFlow • Monitor</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@2/build/global/luxon.min.js"></script>
@@ -11,63 +12,86 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-  <div class="header">
-    <div class="header-wrapper">
-      <div class="header-container">
-        <img id="glowflow-logo" src="logoWhite.png">
-        <span id="username"></span>
+
+  <div class="nav-bg">
+    <div class="NavContainer">
+      <div class="menu" id="menu">
+        <h2 class="hyperlinks"><a href="https://i562007.hera.fontysict.net/glowflow/php/index.php" >Home</a></h2>
+        <h2 class="hyperlinks"><a href="https://i562007.hera.fontysict.net/glowflow/php/aboutus.php">About us</a></h2>
+        <h2 class="hyperlinks"><a href="https://i562007.hera.fontysict.net/glowflow/php/product.php">Our product</a></h2>
+        <h2 class="hyperlinks"><a href="https://i562007.hera.fontysict.net/glowflow/php/contact.php" >Contact</a></h2>
+        <h2 class="hyperlinks"><a href="https://i562007.hera.fontysict.net/glowflow/php/faq.php" >FAQ</a></h2>
+      </div>
+    
+      <div class="NavRightContainer">
         <form id="logout-form" action="/logout" method="post" style="display: inline;">
           <button type="submit">Logout</button>
         </form>
+        <a href="https://i562007.hera.fontysict.net/glowflow/php/index.php"><img src="LogoNoQuote.png" alt="Logo navbar" class="LogoOutsideNav"></a>
       </div>
     </div>
   </div>
+
   <div class="page-wrapper">
     <h1>Power Usage Monitor</h1>
     <div id="info-bar">
       <div class="info-item">
+        <img src="current.png" alt="current usage icon">
         <h2>Current Usage</h2>
-      <p id="current-usage"></p>
+      <p id="current-usage">1.2145</p>
       </div>
       <div class="info-item">
+        <img src="day.png" alt="daily earned icon">
         <h2>Last 24h</h2>
-      <p id="last-24h-usage"></p>
+      <p id="last-24h-usage">1.2145</p>
       </div>
       <div class="info-item">
+        <img src="month.png" alt="monthly earned icon">
         <h2>Last Month</h2>
-      <p id="last-month-usage"></p>
+      <p id="last-month-usage">1.2145</p>
       </div>
       <div class="info-item">
+        <img src="saved.png" alt="Money saved icon">
         <h2>Money Saved</h2>
-      <p id="money-saved"></p>
+      <p id="money-saved">1.2145</p>
       </div>
       <script src="info-bar.js"></script>
     </div>
-    <div class="chart-grid">
-      <div class="chart-container">
-          <h2>Realtime</h2>
-          <canvas id="wattage-chart"></canvas>
-          <script src="realtime-chart.js"></script>
-      </div>
+    <div class="chart-grid-container">
+      <div class="chart-grid">
 
-      <div class="chart-container">
-        <h2>Last Hour</h2>
-        <canvas id="lasthour-chart"></canvas>
-        <script src="lasthour-chart.js"></script>
-      </div>
+        <div class="Chart-all-container">
+          <h2 class="Chart-title">Realtime</h2>
+          <div class="chart-container">
+              <canvas id="wattage-chart"></canvas>
+              <script src="realtime-chart.js"></script>
+          </div>
+        </div>
 
-      <div class="chart-container">
-        <h2>Last 24h</h2>
-        <canvas id="last24h-chart"></canvas>
-        <script src="last24h-chart.js"></script>
-      </div>
+        <div class="Chart-all-container">
+          <h2 class="Chart-title">Last Hour</h2>
+          <div class="chart-container">
+            <canvas id="lasthour-chart"></canvas>
+            <script src="lasthour-chart.js"></script>
+          </div>
+        </div>
 
-      <div class="chart-container">
-        <h2>Last Year</h2>
-        <canvas id="lastyear-chart"></canvas>
-        <script src="lastyear-chart.js"></script>
+        <div class="Chart-all-container">
+          <h2 class="Chart-title">Last 24h</h2>
+          <div class="chart-container">
+            <canvas id="last24h-chart"></canvas>
+            <script src="last24h-chart.js"></script>
+          </div>
+        </div>
+
+        <div class="Chart-all-container">
+          <h2 class="Chart-title">Last Year</h2>
+          <div class="chart-container">
+            <canvas id="lastyear-chart"></canvas>
+            <script src="lastyear-chart.js"></script>
+          </div>
+        </div>
       </div>
-    </div>
     <h2>Latest reports</h2>
     <table id="report-table">
       <thead>
