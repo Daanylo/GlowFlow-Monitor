@@ -58,7 +58,7 @@ async function initializeRealtimeChart() {
                         display: false, // Hide the gridlines
                     },
                     min: 0,
-                    max: 10
+                    max: 0.1
                 }
             },
             plugins: {

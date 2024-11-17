@@ -125,6 +125,7 @@ window.onload = function () {
   setInterval(async () => {
     const reportData = await fetchLatestReports();
     updateTable(reportData);
+    updateInfoBar(reportData);
   }, 1000);
 
   // Fetch and update data every second for realtime data
