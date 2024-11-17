@@ -31,6 +31,7 @@ async function initializeLastYearChart() {
         options: {
             responsive: true,
             animation: false,
+            color: '#f29f05',
             scales: {
                 x: {
                     title: {
@@ -54,7 +55,7 @@ async function initializeLastYearChart() {
                     ticks: {
                         beginAtZero: true,
                         color: '#f29f05',
-                        stepSize: 50, // Set an appropriate step size
+                        stepSize: 1,
                         callback: function(value) {
                             return value.toFixed(1); // Format the y-axis numbers to 1 decimal place
                         }
@@ -63,7 +64,8 @@ async function initializeLastYearChart() {
                         display: true,
                         color: '#f29f05'
                     },
-                    min: 0
+                    min: 0,
+                    max: 10
                 }
             }
         }

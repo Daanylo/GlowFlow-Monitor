@@ -1,4 +1,4 @@
-// Global variable where the report data is stored
+// Initialize global variable for the chart
 let realtime_chart;
 
 async function initializeRealtimeChart() {
@@ -9,19 +9,22 @@ async function initializeRealtimeChart() {
         realtime_chart.destroy();
     }
 
+    // Create default labels from '30' to 'now'
+    const labels = Array.from({ length: 31 }, (_, i) => (i === 30 ? 'Now' : `${30 - i}`));
+
     realtime_chart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: [], // Will be populated with timestamps later
+            labels: labels, // Use default labels initially
             datasets: [{
                 label: 'Wattage (W)',
                 data: Array(31).fill(0), // Initial empty data
                 backgroundColor: 'white',
                 hoverBackgroundColor: '#0d3840',
                 borderWidth: 2,
-                fill: true, // Fill the area below the graph
-                tension: 0, // Smooth the line
-                pointRadius: 0, // Remove dots from the line\
+                fill: true,
+                tension: 0,
+                pointRadius: 0,
             }]
         },
         options: {
@@ -29,41 +32,34 @@ async function initializeRealtimeChart() {
             animation: false,
             scales: {
                 x: {
-                    type: 'time', // Time scale for the x-axis
-                    time: {
-                        unit: 'second', // Each tick is one second
-                        tooltipFormat: 'll HH:mm:ss', // Tooltip format for readability
-                    },
                     ticks: {
-                        color: '#f29f05'
+                        color: '#f29f05',
                     },
                     title: {
                         display: true,
                         color: 'white',
-                        text: 'Time'
+                        text: 'Time',
                     },
                     grid: {
-                        display: false, // Hide the gridlines
-                        color: 'red'
+                        display: false,
                     }
                 },
                 y: {
                     ticks: {
                         beginAtZero: true,
                         color: '#f29f05',
-                        stepSize: 1, // Set a step size for readability
+                        stepSize: 1,
                         callback: function(value) {
-                            return value.toFixed(1); // Format the y-axis numbers to 1 decimal place
+                            return value.toFixed(1);
                         }
                     },
                     title: {
                         display: true,
                         color: 'white',
-                        text: 'Wattage (W)'
+                        text: 'Wattage (W)',
                     },
                     grid: {
-                        display: false, // Hide the gridlines
-                        color: '#f29f05'
+                        display: false,
                     },
                     min: 0,
                     max: 10
@@ -71,70 +67,64 @@ async function initializeRealtimeChart() {
             },
             plugins: {
                 legend: {
-                    display: false // Hide the legend
+                    display: false,
                 },
                 tooltip: {
-                    enabled: false // Disable tooltips if not needed
+                    enabled: false,
                 }
             }
         }
     });
+
     const reportData = await getReportsLast60Seconds();
     updateRealtimeChart(reportData);
 }
 
-// Update the chart
 function updateRealtimeChart(reportData) {
-    if (!reportData || reportData.length === 0 || !realtime_chart) {
+    if (!realtime_chart) {
         return;
     }
 
     const now = new Date();
-    const data = Array(31).fill(0); // Initialize with 0s (no data means 0 wattage)
-    const labels = []; // Will store the timestamps for the x-axis
+    const shiftedTime = new Date(now - 2 * 1000); // Adjust time by 2 seconds
 
-    // Adjust time to allow for 2 seconds of delay
-    const shiftedTime = new Date(now - 2 * 1000); // Shift the current time by 2 seconds
+    // Default labels from '30' to 'Now'
+    const labels = Array.from({ length: 31 }, (_, i) => (i === 30 ? 'Now' : `${30 - i}`));
+    const data = Array(31).fill(0); // Initialize data with zeros
 
-    // Collect data for the last 30 seconds (shifted time)
-    for (let i = 0; i < 30; i++) {
-        const pastTime = new Date(shiftedTime - (30 - i) * 1000); // 30, 29, ..., 1, 0 seconds ago
-        labels.push(pastTime); // Add the timestamp for each second
+    if (reportData && reportData.length > 0) {
+        // Update labels and data based on actual report data
+        for (let i = 0; i < 30; i++) {
+            const pastTime = new Date(shiftedTime - (30 - i) * 1000);
+            labels[i] = pastTime; // Replace static label with actual timestamp if data exists
 
-        // Get data for the respective second
-        const dataForSecond = reportData.filter(row => {
+            const dataForSecond = reportData.filter(row => {
+                const rowTime = new Date(row.datetime);
+                const secondsAgo = Math.floor((shiftedTime - rowTime) / 1000);
+                return secondsAgo === (30 - i);
+            });
+
+            if (dataForSecond.length > 0) {
+                const totalWattage = dataForSecond.reduce((sum, row) => sum + (row.voltage * row.amperage), 0);
+                data[i] = totalWattage / dataForSecond.length;
+            }
+        }
+
+        // Add data for the most recent timestamp
+        const recentData = reportData.filter(row => {
             const rowTime = new Date(row.datetime);
             const secondsAgo = Math.floor((shiftedTime - rowTime) / 1000);
-            return secondsAgo === (30 - i); // Match the second timestamp
+            return secondsAgo === 0;
         });
 
-        // Calculate the wattage if data exists for the specific second
-        if (dataForSecond.length > 0) {
-            const totalWattage = dataForSecond.reduce((sum, row) => sum + (row.voltage * row.amperage), 0);
-            data[i] = totalWattage / dataForSecond.length; // Calculate the average for the second
+        if (recentData.length > 0) {
+            const totalWattage = recentData.reduce((sum, row) => sum + (row.voltage * row.amperage), 0);
+            data[30] = totalWattage / recentData.length;
         }
     }
 
-    // Add the most recent timestamp (Now) - This will be 0 if no new data exists
-    const currentLabel = new Date(shiftedTime);
-    labels.push(currentLabel);
-
-    // Add the current data point (for Now) - This will be 0 if no new data exists
-    const recentData = reportData.filter(row => {
-        const rowTime = new Date(row.datetime);
-        const secondsAgo = Math.floor((shiftedTime - rowTime) / 1000);
-        return secondsAgo === 0; // Match the current second
-    });
-
-    if (recentData.length > 0) {
-        const totalWattage = recentData.reduce((sum, row) => sum + (row.voltage * row.amperage), 0);
-        data[30] = totalWattage / recentData.length; // Average for the current second
-    }
-
-    // Update the chart with the new labels and data
+    // Update chart with new labels and data
     realtime_chart.data.labels = labels;
     realtime_chart.data.datasets[0].data = data;
     realtime_chart.update();
 }
-
-

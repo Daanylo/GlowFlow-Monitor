@@ -55,9 +55,9 @@ async function initializeLastHourChart() {
                     ticks: {
                         beginAtZero: true,
                         color: '#f29f05',
-                        stepSize: 1, // Set a step size for readability
+                        stepSize: 1, 
                         callback: function(value) {
-                            return value.toFixed(1); // Format the y-axis numbers to 1 decimal place
+                            return value.toFixed(1); 
                         }
                     },
                     grid: {

@@ -149,6 +149,7 @@ window.onload = function () {
   setInterval(async () => {
     const reportData = await getReportsLast1Year();
     updateLastYearChart(reportData);
+    updateInfoBar(reportData);
   }, 60000);
 };
 
