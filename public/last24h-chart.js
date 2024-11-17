@@ -13,7 +13,7 @@ async function initializeLast24HourChart() {
     // Genereer labels voor de afgelopen 24 uur
     const labels = Array.from({ length: 24 }, (_, i) => {
         const date = new Date();
-        date.setHours(date.getHours() - (23 - i)); // Elk label is een uur geleden
+        date.setHours(date.getHours() - (23 - i), 0, 0, 0); // Normalize to the start of the hour
         return date.toLocaleTimeString('default', { hour: '2-digit', minute: '2-digit' });
     });
 
@@ -24,19 +24,24 @@ async function initializeLast24HourChart() {
             datasets: [{
                 label: 'Average Power Usage (kWh)',
                 data: Array(24).fill(0),
-                backgroundColor: 'rgba(255, 196, 0, 0.2)',
-                borderColor: 'rgba(255, 196, 0, 1)',
-                borderWidth: 1
+                backgroundColor: 'white',
+                borderWidth: 1,
+                hoverBackgroundColor: '#0d3840'
             }]
         },
         options: {
             responsive: true,
             animation: false,
+            color: '#f29f05',
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: 'Hour'
+                        text: 'Hour',
+                        color: 'white'
+                    },
+                    ticks: {
+                        color: '#f29f05'
                     },
                     grid: {
                         display: false
@@ -45,19 +50,23 @@ async function initializeLast24HourChart() {
                 y: {
                     title: {
                         display: true,
+                        color: 'white',
                         text: 'Power Usage (kWh)'
                     },
                     ticks: {
                         beginAtZero: true,
-                        stepSize: 10,
+                        color: '#f29f05',
+                        stepSize: 1,
                         callback: function(value) {
                             return value.toFixed(1); // Formatteer de y-as waarden op 1 decimaal
                         }
                     },
                     grid: {
-                        display: true
+                        display: true,
+                        color: '#f29f05'
                     },
-                    min: 0
+                    min: 0,
+                    max: 10
                 }
             }
         }
@@ -86,7 +95,7 @@ function updateLast24HourChart(reportData) {
         const rowTime = new Date(row.datetime);
         // Normalize to start of the hour
         rowTime.setMinutes(0, 0, 0); // Set minutes, seconds, and milliseconds to 0
-        const hourLabel = rowTime.toLocaleTimeString('default', { hour: '2-digit' });
+        const hourLabel = rowTime.toLocaleTimeString('default', { hour: '2-digit', minute: '2-digit' });
 
         if (!groupedData.has(hourLabel)) {
             groupedData.set(hourLabel, []);
@@ -102,7 +111,7 @@ function updateLast24HourChart(reportData) {
         const date = new Date();
         date.setHours(date.getHours() - (23 - i));
         date.setMinutes(0, 0, 0); // Normalize to the start of the hour
-        return date.toLocaleTimeString('default', { hour: '2-digit' });
+        return date.toLocaleTimeString('default', { hour: '2-digit', minute: '2-digit' });
     });
 
     // Werk de grafiekgegevens bij met de nieuwe gemiddelde waarden per uur

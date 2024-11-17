@@ -2,7 +2,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #1c312e;
+  background-color: #0d3840;
   color: white;
 }
 
@@ -28,29 +28,33 @@ body {
 }
 
 .page-wrapper {
-  max-width: 1500px;
+  max-width: 90%;
   margin: 0 auto;
-  padding: 20px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 100px;
 }
 
 th, td {
   padding: 10px;
   text-align: left;
-  border: 1px solid rgb(255, 208, 0);
 }
 
 th {
-  background-color: rgb(14, 24, 20);
+  background-color: #0c2b30;
 }
 
 #wattage-chart, #lasthour-chart {
   max-width: 800px;
   max-height: 400px;
+}
+
+.Chart-all-container{
+  display: flex;
+  flex-direction: column;
 }
 
 .chart-container {
@@ -59,9 +63,14 @@ th {
   align-items: center;
   margin-bottom: 20px;
   border-radius: 20px;
-  padding: 10px 20px;
-  background-color: rgb(14, 24, 20);
+  padding: 20px;
+  background-color: #0c2b30;
 }
+
+tr{
+  border-top: solid 3px #0c2b30;
+}
+
 
 .chart-grid {
     display: grid;
@@ -71,17 +80,126 @@ th {
 
 #info-bar {
     display: flex;
-    flex-direction: row;
     justify-content: space-between;
     margin-bottom: 20px;
+    gap: 20px;
 }
 
 .info-item {
-    flex: 1;
-    margin-right: 10px;
-    background-color: rgb(14, 24, 20);;
-    border-radius: 20px;
-    padding: 10px 20px;
+    background-color: #0c2b30;
+    border-radius: 50%;
+    display: flex;
+    width: 300px;
+    height: 300px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
-  
+.info-item img{
+  width: 100px;
+}
+
+.info-item h2{
+  color: #f29f05;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.nav-bg{
+  background-color: #0c2b30;
+}
+
+.NavContainer{
+  display: flex;
+  height: 100px;
+  width: 90%;
+  margin: 0 auto;
+  color: white;
+  justify-content: space-between;
+}
+
+.menu {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.navImageContainer{
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.navImageContainer img{
+  width: 20px;
+  height: auto;
+
+}
+
+.menu a{
+  text-decoration: none;
+  color: #F29F05;
+  display: block;
+  font-size: 20px;
+}
+
+.menu a:hover{
+  transition: 0.3s;
+  color: white;
+}
+
+
+.NavRightContainer{
+  display: flex;
+  align-items: center;
+  gap: 40px ;
+}
+
+
+#logout-form button{
+  border: none;
+  color: #F29F05;
+  font-weight: bolder;
+  font-size: 20px;
+  background-color: #0d3840;
+  padding: 15px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#logout-form button:hover{
+  color: white;
+  transition: 0.3s;
+}
+
+.LogoOutsideNav{
+  width: 80px;
+}

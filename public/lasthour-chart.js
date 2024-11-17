@@ -23,41 +23,49 @@ async function initializeLastHourChart() {
             datasets: [{
                 label: 'Average Power Usage (kWh)',
                 data: Array(60).fill(0), // Initial empty data for 60 minutes
-                backgroundColor: 'rgba(255, 196, 0, 0.2)',
-                borderColor: 'rgba(255, 196, 0, 1)',
-                borderWidth: 1
+                backgroundColor: 'white',
+                hoverBackgroundColor: '#0d3840',
+                borderWidth: 1,
             }]
         },
         options: {
             responsive: true,
             animation: false,
+            color: '#f29f05',
             scales: {
                 x: {
                     title: {
                         display: true,
-                        text: 'Time (HH:MM)'
+                        text: 'Time (HH:MM)',
+                        color: 'white' // Kleur van de titel van de x-as
+                    },
+                    ticks: {
+                        color: '#f29f05'
                     },
                     grid: {
-                        display: false
+                        display: false,
                     }
                 },
                 y: {
                     title: {
                         display: true,
+                        color: 'white',
                         text: 'Power Usage (kWh)'
                     },
                     ticks: {
                         beginAtZero: true,
-                        stepSize: 1, // Set a step size for readability
+                        color: '#f29f05',
+                        stepSize: 1, 
                         callback: function(value) {
-                            return value.toFixed(1); // Format the y-axis numbers to 1 decimal place
+                            return value.toFixed(1); 
                         }
                     },
                     grid: {
-                        display: true
+                        display: true,
+                        color: '#f29f05'
                     },
                     min: 0,
-                    max: 10
+                    max: 10,
                 }
             }
         }
