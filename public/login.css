@@ -5,8 +5,10 @@ body{
 }
 
 .container {
-    width: 90%;
-    margin: 0 auto;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 
 .LoginLogoContainer{
@@ -16,15 +18,22 @@ body{
 
 .logo{
     width: 200px;
-    margin-top: 30px;
-    margin-bottom: 50px;
+}
+
+.SubContainer{
+    max-width: 300px;
+    width: 100%;
+    padding: 0px 20px;
 }
 
 .signin-form{
     display: flex;
     flex-direction: column;
+    margin: 0 auto;
     gap: 15px;
-    margin-top: 20px;
+    justify-content: center;
+    align-items: center;
+    margin-top: -100px;
 }
 
 .signin-form input{
@@ -34,6 +43,8 @@ body{
     font-size: 15px;
     background-color: #ffffff;
     color: #10454F;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .signin-form button{
@@ -44,10 +55,11 @@ body{
     font-size: 16px;
     cursor: pointer;
     color: #10454F;
+    width: 100%;
 }
 
 input::placeholder{
-    color: #10454F;
+    color: #10454f75;
     font-style: italic;
     font-size: 15px;
     padding-left: 20px;

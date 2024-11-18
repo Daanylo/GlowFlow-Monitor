@@ -10,6 +10,7 @@
   <script src="https://cdn.jsdelivr.net/npm/luxon@2/build/global/luxon.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
 </head>
 <body>
 
@@ -34,78 +35,101 @@
   </div>
 
   <div class="page-wrapper">
-    <h1>Power Usage Monitor</h1>
-    <div id="info-bar">
-      <div class="info-item">
-        <img src="current.png" alt="current usage icon">
-        <h2>Current Usage</h2>
-      <p id="current-usage">1.2145</p>
-      </div>
-      <div class="info-item">
-        <img src="day.png" alt="daily earned icon">
-        <h2>Last 24h</h2>
-      <p id="last-24h-usage">1.2145</p>
-      </div>
-      <div class="info-item">
-        <img src="month.png" alt="monthly earned icon">
-        <h2>Last Month</h2>
-      <p id="last-month-usage">1.2145</p>
-      </div>
-      <div class="info-item">
-        <img src="saved.png" alt="Money saved icon">
-        <h2>Money Saved</h2>
-      <p id="money-saved">1.2145</p>
-      </div>
-      <script src="info-bar.js"></script>
+    <div id="switch">
+      <h1 id="power-usage-button" class="active">Power Usage Monitor</h1>
+      <h1 id="controls-button" class="inactive">Controls</h1>
     </div>
-    <div class="chart-grid-container">
-      <div class="chart-grid">
-
-        <div class="Chart-all-container">
-          <h2 class="Chart-title">Realtime</h2>
-          <div class="chart-container">
-              <canvas id="wattage-chart"></canvas>
-              <script src="realtime-chart.js"></script>
-          </div>
+    <div id="controls-page">
+      <button id="lights-on-button">Turn on lights</button>
+    </div>
+    <div id="power-usage-page">
+      <div id="info-bar">
+        <div class="info-item">
+          <img src="current.png" alt="current usage icon">
+          <h2>Current Usage</h2>
+        <p id="current-usage">Loading...</p>
         </div>
-
-        <div class="Chart-all-container">
-          <h2 class="Chart-title">Last Hour</h2>
-          <div class="chart-container">
-            <canvas id="lasthour-chart"></canvas>
-            <script src="lasthour-chart.js"></script>
-          </div>
+        <div class="info-item">
+          <img src="day.png" alt="daily earned icon">
+          <h2>Last 24h</h2>
+        <p id="last-24h-usage">Loading...</p>
         </div>
-
-        <div class="Chart-all-container">
-          <h2 class="Chart-title">Last 24h</h2>
-          <div class="chart-container">
-            <canvas id="last24h-chart"></canvas>
-            <script src="last24h-chart.js"></script>
-          </div>
+        <div class="info-item">
+          <img src="month.png" alt="monthly earned icon">
+          <h2>Last Month</h2>
+        <p id="last-month-usage">Loading...</p>
         </div>
-
-        <div class="Chart-all-container">
-          <h2 class="Chart-title">Last Year</h2>
-          <div class="chart-container">
-            <canvas id="lastyear-chart"></canvas>
-            <script src="lastyear-chart.js"></script>
-          </div>
+        <div class="info-item">
+          <img src="saved.png" alt="Money saved icon">
+          <h2>Money Saved</h2>
+        <p id="money-saved">Loading...</p>
         </div>
+        <div class="total-usage">
+          <h2>Total usage</h2>
+        <p id="total-usage">Loading...</p>
+        </div>
+        <script src="info-bar.js"></script>
       </div>
-    <h2>Latest reports</h2>
-    <table id="report-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Datetime</th>
-          <th>Wattage</th>
-        </tr>
-      </thead>
-      <tbody>
-      </tbody>
-    </table>
-    <script src="realtime-table.js"></script>
+      <div class="chart-grid-container">
+        <div class="chart-grid">
+
+          <div class="Chart-all-container">
+            <div class="Chart-header-container">
+              <h2 class="Chart-title">Realtime</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="wattage-chart"></canvas>
+                <script src="realtime-chart.js"></script>
+            </div>
+          </div>
+
+          <div class="Chart-all-container">
+            <div class="Chart-header-container">
+              <h2 class="Chart-title">Last Hour</h2>
+              <lottie-player id="refresh-lasthour" src="refresh.json"></lottie-player>
+            </div>
+            <div class="chart-container">
+              <canvas id="lasthour-chart"></canvas>
+              <script src="lasthour-chart.js"></script>
+            </div>
+          </div>
+
+          <div class="Chart-all-container">
+            <div class="Chart-header-container">
+              <h2 class="Chart-title">Last 24h</h2>
+              <lottie-player id="refresh-last24h" src="refresh.json"></lottie-player>
+            </div>
+            <div class="chart-container">
+              <canvas id="last24h-chart"></canvas>
+              <script src="last24h-chart.js"></script>
+            </div>
+          </div>
+
+          <div class="Chart-all-container">
+            <div class="Chart-header-container">
+              <h2 class="Chart-title">Last Year</h2>
+              <lottie-player id="refresh-lastyear" src="refresh.json"></lottie-player>
+            </div>
+            <div class="chart-container">
+              <canvas id="lastyear-chart"></canvas>
+              <script src="lastyear-chart.js"></script>
+            </div>
+          </div>
+        </div>
+      <h2>Latest reports</h2>
+      <table id="report-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Datetime</th>
+            <th>Wattage</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
+      <script src="realtime-table.js"></script>
+      </div>
   </div>
 </body>
 </html>

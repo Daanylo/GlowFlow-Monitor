@@ -30,6 +30,7 @@ async function initializeRealtimeChart() {
         options: {
             responsive: true,
             animation: false,
+            color: '#f29f05',
             scales: {
                 x: {
                     ticks: {
@@ -38,7 +39,7 @@ async function initializeRealtimeChart() {
                     title: {
                         display: true,
                         color: 'white',
-                        text: 'Time',
+                        text: 'Seconds ago',
                     },
                     grid: {
                         display: false,
@@ -62,12 +63,12 @@ async function initializeRealtimeChart() {
                         display: false,
                     },
                     min: 0,
-                    max: 0.1
+                    max: 10
                 }
             },
             plugins: {
                 legend: {
-                    display: false,
+                    display: true,
                 },
                 tooltip: {
                     enabled: false,
@@ -75,16 +76,10 @@ async function initializeRealtimeChart() {
             }
         }
     });
-
-    const reportData = await getReportsLast60Seconds();
-    updateRealtimeChart(reportData);
+    updateRealtimeChart();
 }
 
-function updateRealtimeChart(reportData) {
-    if (!realtime_chart) {
-        return;
-    }
-
+function updateRealtimeChart() {
     const now = new Date();
     const shiftedTime = new Date(now - 2 * 1000); // Adjust time by 2 seconds
 
@@ -93,11 +88,9 @@ function updateRealtimeChart(reportData) {
     const data = Array(31).fill(0); // Initialize data with zeros
 
     if (reportData && reportData.length > 0) {
-        // Update labels and data based on actual report data
-        for (let i = 0; i < 30; i++) {
-            const pastTime = new Date(shiftedTime - (30 - i) * 1000);
-            labels[i] = pastTime; // Replace static label with actual timestamp if data exists
 
+        // Update data based on actual report data
+        for (let i = 0; i < 31; i++) {
             const dataForSecond = reportData.filter(row => {
                 const rowTime = new Date(row.datetime);
                 const secondsAgo = Math.floor((shiftedTime - rowTime) / 1000);
@@ -109,21 +102,8 @@ function updateRealtimeChart(reportData) {
                 data[i] = totalWattage / dataForSecond.length;
             }
         }
-
-        // Add data for the most recent timestamp
-        const recentData = reportData.filter(row => {
-            const rowTime = new Date(row.datetime);
-            const secondsAgo = Math.floor((shiftedTime - rowTime) / 1000);
-            return secondsAgo === 0;
-        });
-
-        if (recentData.length > 0) {
-            const totalWattage = recentData.reduce((sum, row) => sum + (row.voltage * row.amperage), 0);
-            data[30] = totalWattage / recentData.length;
-        }
     }
-
-    // Update chart with new labels and data
+    // Update the chart data with the new values
     realtime_chart.data.labels = labels;
     realtime_chart.data.datasets[0].data = data;
     realtime_chart.update();

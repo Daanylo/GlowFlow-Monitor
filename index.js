@@ -115,48 +115,18 @@ app.post('/login', async (req, res) => {
 app.get('/api/reports', ensureAuthenticated, async (req, res) => {
   try {
     const networkId = req.session.networkId;
-    const { startTime, endTime } = req.query;
-    if (!startTime || !endTime) {
-      return res.status(400).json({ success: false, message: 'startTime and endTime are required' });
-    }
     const query = `
       SELECT id, datetime, voltage, amperage 
       FROM report 
       WHERE network_id = ? 
-        AND datetime BETWEEN ? AND ?
     `;
-    const [rows] = await connection.execute(query, [networkId, startTime, endTime]);
+    const [rows] = await connection.execute(query, [networkId]);
     res.json(rows);
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).send("Error fetching data");
   }
 });
-
-app.get('/api/reports/latest', async (req, res) => {
-  const networkId = req.session.networkId;
-  
-  if (!networkId) {
-    return res.status(400).json({ error: "Network ID is not set in session" });
-  }
-
-  const query = `
-    SELECT id, datetime, voltage, amperage
-    FROM report
-    WHERE network_id = 1
-    ORDER BY datetime DESC
-    LIMIT 5
-  `;
-
-  try {
-    const [rows] = await connection.execute(query, [networkId]);
-    res.json(rows);
-  } catch (error) {
-    console.error("Error executing query:", error);
-    res.status(500).json({ error: "Error fetching latest reports from database" });
-  }
-});
-
 
 // Verwerkt nieuwe data en voegt deze toe aan de database
 app.post('/api/reports', async (req, res) => {

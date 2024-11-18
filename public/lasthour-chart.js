@@ -17,7 +17,7 @@ async function initializeLastHourChart() {
     });
 
     lasthour_chart = new Chart(ctx, {
-        type: 'bar',
+        type: 'line',
         data: {
             labels: labels,
             datasets: [{
@@ -26,6 +26,8 @@ async function initializeLastHourChart() {
                 backgroundColor: 'white',
                 hoverBackgroundColor: '#0d3840',
                 borderWidth: 1,
+                fill: true,
+                pointRadius: 0
             }]
         },
         options: {
@@ -36,7 +38,7 @@ async function initializeLastHourChart() {
                 x: {
                     title: {
                         display: true,
-                        text: 'Time (HH:MM)',
+                        text: 'Minute',
                         color: 'white' // Kleur van de titel van de x-as
                     },
                     ticks: {
@@ -70,30 +72,28 @@ async function initializeLastHourChart() {
             }
         }
     });
-    const reportData = await getReportsLast1Hour();
-    updateLastHourChart(reportData);
+    updateLastHourChart();
 }
 
-function updateLastHourChart(reportData) {
-    if (!reportData || reportData.length === 0 || !lasthour_chart) {
-        return;
-    }
+function updateLastHourChart() {
     const now = new Date();
     const groupedData = new Map();
 
     // Group data points by minute timestamp (formatted as "HH:MM")
-    reportData.forEach(row => {
-        const rowTime = new Date(row.datetime);
-        const minuteTimestamp = rowTime.toTimeString().slice(0, 5); // "HH:MM" format
+    if (reportData && reportData.length > 0) {
+        reportData.forEach(row => {
+            const rowTime = new Date(row.datetime);
+            const minuteTimestamp = rowTime.toTimeString().slice(0, 5); // "HH:MM" format
 
-        if (!groupedData.has(minuteTimestamp)) {
-            groupedData.set(minuteTimestamp, []);
-        }
+            if (!groupedData.has(minuteTimestamp)) {
+                groupedData.set(minuteTimestamp, []);
+            }
 
-        // Calculate power usage and store it for averaging
-        const wattage = row.voltage * row.amperage;
-        groupedData.get(minuteTimestamp).push(wattage);
-    });
+            // Calculate power usage and store it for averaging
+            const wattage = row.voltage * row.amperage;
+            groupedData.get(minuteTimestamp).push(wattage);
+        });
+    }
 
     // Shift the labels and data for the last 60 minutes
     const labels = Array.from({ length: 60 }, (_, i) => {
@@ -103,14 +103,21 @@ function updateLastHourChart(reportData) {
 
     // Update the chart data with the new average values
     lasthour_chart.data.labels = labels;
-    lasthour_chart.data.datasets[0].data = labels.map(label => {
-        const dataPoints = groupedData.get(label) || [];
-        if (dataPoints.length === 0) return 0; // No data for this minute
 
-        // Average of all data points within this minute
-        const sum = dataPoints.reduce((acc, value) => acc + value, 0);
-        return sum / dataPoints.length;
+    // Calculate average wattage for each minute
+    const data = labels.map(label => {
+        const wattages = groupedData.get(label) || [];
+        const averageWattage = wattages.length > 0 ? wattages.reduce((a, b) => a + b, 0) / wattages.length : 0;
+        return averageWattage;
     });
 
+    lasthour_chart.data.datasets[0].data = data;
     lasthour_chart.update();
 }
+
+document.getElementById('refresh-lasthour').addEventListener('click', function() {
+    this.stop();
+    this.seek(0);
+    this.play();
+    updateLastHourChart();
+});

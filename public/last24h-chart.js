@@ -71,12 +71,11 @@ async function initializeLast24HourChart() {
             }
         }
     });
-    const reportData = await getReportsLast24Hours();
-    updateLast24HourChart(reportData);
+    updateLast24HourChart();
 }
 
 // Werk de 24-uurs grafiek bij met nieuwe gemiddelde waarden per uur
-function updateLast24HourChart(reportData) {
+function updateLast24HourChart() {
     if (!reportData || reportData.length === 0 || !last24HourChart) {
         return;
     }
@@ -127,4 +126,11 @@ function updateLast24HourChart(reportData) {
 
     last24HourChart.update();
 }
+
+document.getElementById('refresh-last24h').addEventListener('click', function() {
+    this.stop();
+    this.seek(0);
+    this.play();
+    updateLast24HourChart();
+});
 

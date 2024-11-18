@@ -70,11 +70,10 @@ async function initializeLastYearChart() {
             }
         }
     });
-    const reportData = await getReportsLast1Year();
-    updateLastYearChart(reportData);
+    updateLastYearChart();
 }
 
-function updateLastYearChart(reportData) {
+function updateLastYearChart() {
     if (!reportData || reportData.length === 0 || !lastYearChart) {
         return;
     }
@@ -116,3 +115,10 @@ function updateLastYearChart(reportData) {
 
     lastYearChart.update();
 }
+
+document.getElementById('refresh-lastyear').addEventListener('click', function() {
+    this.stop();
+    this.seek(0);
+    this.play();
+    updateLastYearChart();
+});

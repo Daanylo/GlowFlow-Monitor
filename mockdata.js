@@ -25,6 +25,7 @@ async function insertMockData() {
 
         // Get local time and manually adjust for timezone offset
         const localDate = new Date();
+        localDate.setHours(localDate.getHours() + 1); // Adjust time by adding 1 hour
         const localDatetime = localDate.toISOString().slice(0, 19).replace('T', ' ');
 
         await connection.execute(

@@ -1,5 +1,5 @@
 // Assuming reportData is available globally, or is passed to this function
-function updateInfoBar(reportData) {
+function updateInfoBar() {
     if (!reportData || reportData.length === 0) {
         return;
     }
@@ -37,6 +37,14 @@ const costPerKWh = 0.12; // This is a realistic average cost
 const moneySaved = lastMonthUsage * costPerKWh;
 document.getElementById('money-saved').innerText = `€${moneySaved.toFixed(2)}`;
 
+const totalWattage = reportData.reduce((sum, row) => {
+  const wattage = row.voltage * row.amperage; // Wattage = Voltage * Amperage
+  return sum + wattage;
+}, 0);
+// Convert Wattage to kWh (divide by 1000 to convert Watts to Kilowatts)
+const totalKWh = totalWattage / 1000;
+document.getElementById('total-usage').innerText = `${totalKWh.toFixed(2)} kWh`;
+
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -55,3 +63,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Error fetching username:", error);
     }
   });
+
+  document.getElementById('power-usage-button').addEventListener('click', function() {
+    this.classList.add('active');
+    this.classList.remove('inactive');
+    document.getElementById('power-usage-page').style.display = 'block';
+    document.getElementById('controls-page').style.display = 'none';
+    document.getElementById('controls-button').classList.remove('active');
+    document.getElementById('controls-button').classList.add('inactive');
+});
+
+document.getElementById('controls-button').addEventListener('click', function() {
+    this.classList.add('active');
+    this.classList.remove('inactive');
+    document.getElementById('controls-page').style.display = 'block';
+    document.getElementById('power-usage-page').style.display = 'none';
+    document.getElementById('power-usage-button').classList.remove('active');
+    document.getElementById('power-usage-button').classList.add('inactive');
+});
+
