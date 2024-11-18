@@ -82,6 +82,11 @@ textarea::placeholder{
     display: block;
 }
 
+#login-button:hover{
+    background-color: #b77700;
+    transition: 0.3s;
+}
+
 .signup-link {
     font-size: 12px;
     color: #ffffff;
