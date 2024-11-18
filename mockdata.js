@@ -24,7 +24,13 @@ async function insertMockData() {
         const { voltage, amperage } = generateMockValues();
 
         // Send data as a POST request to /api/reports
-        const response = await axios.post('https://gfmonitor-gwfw7a1a.b4a.run/api/reports', {
+        // const response = await axios.post('https://gfmonitor-gwfw7a1a.b4a.run/api/reports', {
+        //     voltage,
+        //     amperage,
+        //     network_id
+        // });
+
+        const response = await axios.post('http://localhost:3000/api/reports', {
             voltage,
             amperage,
             network_id

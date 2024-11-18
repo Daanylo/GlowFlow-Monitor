@@ -176,7 +176,8 @@ app.post('/api/reports', async (req, res) => {
       if (!connection) {
           return res.status(500).send('Database connection not established');
       }
-      const localDate = new Date().toISOString(); // UTC date
+      const date = new Date();
+      const localDate = date.toISOString().slice(0, 19).replace('T', ' ');
       const query = `
         INSERT INTO report (datetime, voltage, amperage, network_id) 
         VALUES (CONVERT_TZ(?, '+00:00', 'Europe/Amsterdam'), ?, ?, ?)
