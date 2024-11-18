@@ -13,40 +13,35 @@ document.getElementById("login-form").addEventListener("submit", async function 
 
   const minLoadTime = 2500; // Minimaal 2 seconden laden
   const startTime = Date.now();
+
   try {
-    const response = await fetch("/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-    });
+      const response = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+      });
 
-    const contentType = response.headers.get("Content-Type");
-    console.log("Response Content-Type:", contentType);
+      const result = await response.json();
 
-    if (!response.ok) {
-        console.error(`HTTP Error: ${response.status} - ${response.statusText}`);
-        alert("Inloggen is mislukt. Controleer uw gegevens.");
-        return;
-    }
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, minLoadTime - elapsedTime);
 
-    // Probeer alleen te parsen als het JSON is
-    if (contentType && contentType.includes("application/json")) {
-        const result = await response.json();
-        console.log("Parsed JSON:", result);
+      // Wacht tot de minimale laadtijd is verstreken
+      await new Promise(resolve => setTimeout(resolve, remainingTime));
 
-        if (result.success) {
-            window.location.href = "/monitor";
-        } else {
-            alert(result.message);
-        }
-    } else {
-        const responseText = await response.text();
-        console.error("Non-JSON Response:", responseText);
-        alert("Ongeldig antwoord van de server.");
-    }
-} catch (error) {
-    console.error("Error:", error);
-    alert("Een fout is opgetreden. Probeer het later opnieuw.");
-}
+      if (result.success) {
+          window.location.href = "/monitor"; // Succesvolle login
+      } else {
+          alert(result.message);
+      }
+  } catch (error) {
+      console.error("Error:", error);
+      alert("Een fout is opgetreden. Probeer het later opnieuw.");
+  } finally {
+      // Herstel UI na afronding
+      loader.style.display = "none";
+      pageOverlay.style.display = "none"; // Verberg de overlay
+      loginButton.style.display = "block";
+  }
 
 });
