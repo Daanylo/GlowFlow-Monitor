@@ -23,12 +23,8 @@ async function insertMockData() {
     try {
         const { voltage, amperage } = generateMockValues();
 
-        // Get the current time in UTC
-        const now = new Date();
-        const utcDate = new Date(now.getTime() + now.getTimezoneOffset() * 60000).toISOString().slice(0, 19).replace('T', ' ');
-
         // Send data as a POST request to /api/reports
-        const response = await axios.post('https://gfmonitor.onrender.com/api/reports', {
+        const response = await axios.post('https://gfmonitor-gwfw7a1a.b4a.run/api/reports', {
             voltage,
             amperage,
             network_id

@@ -1,3 +1,4 @@
+process.env.TZ = 'Europe/Amsterdam';
 import bcrypt from 'bcryptjs';
 import mysql from 'mysql2/promise.js';
 import express from 'express';
@@ -175,8 +176,11 @@ app.post('/api/reports', async (req, res) => {
       if (!connection) {
           return res.status(500).send('Database connection not established');
       }
-      const localDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
-      const query = 'INSERT INTO report (datetime, voltage, amperage, network_id) VALUES (?, ?, ?, ?)';
+      const localDate = new Date().toISOString(); // UTC date
+      const query = `
+        INSERT INTO report (datetime, voltage, amperage, network_id) 
+        VALUES (CONVERT_TZ(?, '+00:00', 'Europe/Amsterdam'), ?, ?, ?)
+      `;
       const [result] = await connection.execute(query, [localDate, voltage, amperage, network_id]);
       res.status(201).json({ 
         id: result.insertId, 
