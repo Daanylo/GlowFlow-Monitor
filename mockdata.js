@@ -1,4 +1,4 @@
-// mockdata.js
+import axios from 'axios';
 import mysql from 'mysql2/promise';
 
 // Setup MySQL connection
@@ -23,23 +23,22 @@ async function insertMockData() {
     try {
         const { voltage, amperage } = generateMockValues();
 
-        // Get local time and manually adjust for timezone offset
-        const localDate = new Date();
-        localDate.setHours(localDate.getHours() + 1); // Adjust time by adding 1 hour
-        const localDatetime = localDate.toISOString().slice(0, 19).replace('T', ' ');
+        // Get the current time in UTC
+        const now = new Date();
+        const utcDate = new Date(now.getTime() + now.getTimezoneOffset() * 60000).toISOString().slice(0, 19).replace('T', ' ');
 
-        await connection.execute(
-            'INSERT INTO report (datetime, voltage, amperage, network_id) VALUES (?, ?, ?, ?)',
-            [localDatetime, voltage, amperage, network_id]
-        );
-        
-        console.log(`Added data: ${localDatetime}, ${voltage.toFixed(2)}V, ${amperage.toFixed(2)}A, ${network_id}`);
+        // Send data as a POST request to /api/reports
+        const response = await axios.post('https://gfmonitor.onrender.com/api/reports', {
+            voltage,
+            amperage,
+            network_id
+        });
+
+        console.log(`Added data: ${response.data.localDate}, ${voltage.toFixed(2)}V, ${amperage.toFixed(2)}A, ${network_id}`);
     } catch (error) {
         console.error('Error:', error);
     }
 }
 
-
 // Insert data every second
 setInterval(insertMockData, 1000);
-console.log('Started adding mock data...');
