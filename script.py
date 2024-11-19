@@ -6,11 +6,9 @@ arduino = serial.Serial(port='COM3', baudrate=9600, timeout=1)
 
 def send_command(command):
     arduino.write((command + '\n').encode())  # Send command
-    time.sleep(0.1)  # Give the Arduino time to respond
-    response = arduino.readline().decode().strip()  # Read response
-    return response
+    # time.sleep(0.1)  # Give the Arduino time to respond
+    # response = arduino.readline().decode().strip()  # Read response
+    # return response
 
 # Example: Send commands to turn the LED on and off
-print(send_command("LED_ON"))
-time.sleep(2)
-print(send_command("LED_OFF"))
+print(send_command("LED_Switch"))
