@@ -25,6 +25,9 @@
       </div>
     
       <div class="NavRightContainer">
+        <form class="desktop" id="logout-form" action="/logout" method="post" style="display: inline;">
+          <button type="submit">Logout</button>
+        </form>
         <span id="username"></span>
 
         <a href="https://i562007.hera.fontysict.net/glowflow/php/index.php"><img src="LogoNoQuote.png" alt="Logo navbar" class="LogoOutsideNav"></a>
@@ -32,7 +35,7 @@
     </div>
   </div>
 
-  <form id="logout-form" action="/logout" method="post" style="display: inline;">
+  <form class="mobile" id="logout-form" action="/logout" method="post" style="display: inline;">
     <button type="submit">Logout</button>
   </form>
 
