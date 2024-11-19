@@ -82,3 +82,14 @@ document.getElementById('controls-button').addEventListener('click', function() 
     document.getElementById('power-usage-button').classList.add('inactive');
 });
 
+document.getElementById('lights-on-button').addEventListener('click', async function() {
+  try {
+      const response = await fetch('/run-script', {
+          method: 'POST'
+      });
+      const result = await response.text();
+      console.log(result);
+  } catch (error) {
+      console.error('Error:', error);
+  }
+});

@@ -8,6 +8,7 @@ import session from 'express-session';
 import favicon from 'serve-favicon';
 import expressMySqlSession from "express-mysql-session";
 import dotenv from 'dotenv';
+import { exec } from 'child_process';
 dotenv.config();
 
 
@@ -98,6 +99,17 @@ app.get('/login', (req, res) => {
 app.get('/', (req, res) => {
   res.redirect('/login');
 })
+
+app.post('/run-script', (req, res) => {
+  exec('python script.py', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing script: ${error}`);
+      return res.status(500).send('Error executing script');
+    }
+    console.log(`Script output: ${stdout}`);
+    res.send('Script executed successfully');
+  });
+});
 
 // Verwerkt login-aanvraag
 app.post('/login', async (req, res) => {
