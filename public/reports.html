@@ -26,13 +26,15 @@
     
       <div class="NavRightContainer">
         <span id="username"></span>
-        <form id="logout-form" action="/logout" method="post" style="display: inline;">
-          <button type="submit">Logout</button>
-        </form>
+
         <a href="https://i562007.hera.fontysict.net/glowflow/php/index.php"><img src="LogoNoQuote.png" alt="Logo navbar" class="LogoOutsideNav"></a>
       </div>
     </div>
   </div>
+
+  <form id="logout-form" action="/logout" method="post" style="display: inline;">
+    <button type="submit">Logout</button>
+  </form>
 
   <div class="page-wrapper">
     <div id="switch">
@@ -44,29 +46,32 @@
     </div>
     <div id="power-usage-page">
       <div id="info-bar">
-        <div class="info-item">
-          <img src="current.png" alt="current usage icon">
-          <h2>Current Usage</h2>
-        <p id="current-usage">Loading...</p>
+        <div class="info-bar-circles">
+          <div class="info-item">
+            <img src="current.png" alt="current usage icon">
+            <h2>Current Usage</h2>
+          <p id="current-usage">Loading...</p>
+          </div>
+          <div class="info-item">
+            <img src="day.png" alt="daily earned icon">
+            <h2>Last 24h</h2>
+          <p id="last-24h-usage">Loading...</p>
+          </div>
+          <div class="info-item">
+            <img src="month.png" alt="monthly earned icon">
+            <h2>Last Month</h2>
+          <p id="last-month-usage">Loading...</p>
+          </div>
+          <div class="info-item">
+            <img src="saved.png" alt="Money saved icon">
+            <h2>Money Saved</h2>
+          <p id="money-saved">Loading...</p>
+          </div>
         </div>
-        <div class="info-item">
-          <img src="day.png" alt="daily earned icon">
-          <h2>Last 24h</h2>
-        <p id="last-24h-usage">Loading...</p>
-        </div>
-        <div class="info-item">
-          <img src="month.png" alt="monthly earned icon">
-          <h2>Last Month</h2>
-        <p id="last-month-usage">Loading...</p>
-        </div>
-        <div class="info-item">
-          <img src="saved.png" alt="Money saved icon">
-          <h2>Money Saved</h2>
-        <p id="money-saved">Loading...</p>
-        </div>
+        
         <div class="total-usage">
           <h2>Total usage</h2>
-        <p id="total-usage">Loading...</p>
+          <p id="total-usage">Loading...</p>
         </div>
         <script src="info-bar.js"></script>
       </div>

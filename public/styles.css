@@ -5,14 +5,6 @@
     flex-direction: column;
   }
 
-  .Chart-all-container{
-    width: 90%;
-  }
-
-  table{
-    width: 90% !important;
-  }
-
   #switch{
     justify-content: center;
   }
@@ -26,6 +18,61 @@
     font-size: 1em !important;
   }
 
+  #info-bar {
+    flex-direction: column;
+  }
+
+  .info-bar-circles{
+    width: 100%;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 0 !important;
+  }
+
+  .info-item {
+    width: 90px !important;
+    height: 90px !important;
+}
+
+.info-item img{
+  width: 20px !important;
+}
+
+.info-item h2{
+  font-size: 10px;
+}
+
+.info-item p{
+  font-size: 10px;
+}
+
+  .total-usage{
+    width: 90% !important;
+  }
+
+  #total-usage{
+    font-size: 2em !important;
+  }
+
+  #username{
+    display: none;
+  }
+
+  .menu{
+    gap: 20px !important;
+  }
+
+  .menu a{
+    font-size: 15px !important;
+  }
+
+  .LogoOutsideNav{
+    display: none;
+  }
+
+  #logout-form button{
+    margin: 30px 0 20px 20px;
+  }
 }
 
 body {
@@ -110,20 +157,26 @@ tr{
 
 #info-bar {
     display: flex;
-    justify-content: start;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
     gap: 20px;
+}
+
+.info-bar-circles{
+  display: flex;
+  gap: 20px;
 }
 
 .info-item {
     background-color: #0c2b30;
     border-radius: 50%;
     display: flex;
-    min-width: 200px;
-    min-height: 200px;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    width: 225px;
+    height: 225px;
 }
 
 .info-item img{
@@ -133,6 +186,7 @@ tr{
 .info-item h2{
   color: #f29f05;
   margin: 10px 0px 0px 0px;
+  text-align: center;
 }
 
 lottie-player {
@@ -284,7 +338,7 @@ lottie-player {
   color: #F29F05;
   font-weight: bolder;
   font-size: 20px;
-  background-color: #0d3840;
+  background-color: #0c2b30;
   padding: 15px;
   border-radius: 10px;
   cursor: pointer;
