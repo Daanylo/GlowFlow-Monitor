@@ -63,7 +63,7 @@ async function initializeRealtimeChart() {
                         display: false,
                     },
                     min: 0,
-                    max: 10
+                    max: 50
                 }
             },
             plugins: {

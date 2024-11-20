@@ -57,7 +57,7 @@ async function initializeLastHourChart() {
                     ticks: {
                         beginAtZero: true,
                         color: '#f29f05',
-                        stepSize: 1, 
+                        stepSize: 10, 
                         callback: function(value) {
                             return value.toFixed(1); 
                         }
@@ -67,7 +67,7 @@ async function initializeLastHourChart() {
                         color: '#f29f05'
                     },
                     min: 0,
-                    max: 10,
+                    max: 100,
                 }
             }
         }
