@@ -18,11 +18,10 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
-    "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.1",
     "luxon": "^3.5.0",
-    "mysql2": "^3.11.4",
-    "serve-favicon": "^2.5.0"
+    "serve-favicon": "^2.5.0",
+    "sqlite3": "^5.1.7"
   },
   "description": ""
 }

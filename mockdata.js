@@ -1,13 +1,7 @@
 import axios from 'axios';
-import mysql from 'mysql2/promise';
 
-// Setup MySQL connection
-const connection = await mysql.createConnection({
-    host: '34.70.180.208',
-    user: 'daan',
-    password: 'Daanww@22',
-    database: 'streetlight_db'
-});
+// Note: Since we're now using an in-memory SQLite database, 
+// we can only interact with it through the API endpoints
 
 // Function to generate random values
 function generateMockValues() {
@@ -17,19 +11,13 @@ function generateMockValues() {
     };
 }
 
-// Function to insert one row of data
+// Function to insert one row of data via API
 async function insertMockData() {
     const network_id = 1;
     try {
         const { voltage, amperage } = generateMockValues();
 
         // Send data as a POST request to /api/reports
-        // const response = await axios.post('https://gfmonitor-gwfw7a1a.b4a.run/api/reports', {
-        //     voltage,
-        //     amperage,
-        //     network_id
-        // });
-
         const response = await axios.post('http://localhost:3000/api/reports', {
             voltage,
             amperage,
@@ -38,9 +26,19 @@ async function insertMockData() {
 
         console.log(`Added data: ${response.data.localDate}, ${voltage.toFixed(2)}V, ${amperage.toFixed(2)}A, ${network_id}`);
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Error adding mock data:', error.message);
+        if (error.response) {
+            console.error('Response status:', error.response.status);
+            console.error('Response data:', error.response.data);
+        }
     }
 }
 
-// Insert data every second
-setInterval(insertMockData, 1000);
+// Wait a bit for the server to start, then begin inserting data every second
+console.log('Mock data generator starting...');
+console.log('Make sure the main server is running on http://localhost:3000');
+
+setTimeout(() => {
+    console.log('Starting to send mock data every second...');
+    setInterval(insertMockData, 1000);
+}, 2000); // Wait 2 seconds before starting

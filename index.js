@@ -1,28 +1,27 @@
 process.env.TZ = 'Europe/Amsterdam';
 import bcrypt from 'bcryptjs';
-import mysql from 'mysql2/promise.js';
+import sqlite3 from 'sqlite3';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import favicon from 'serve-favicon';
-import expressMySqlSession from "express-mysql-session";
 import dotenv from 'dotenv';
 import { exec } from 'child_process';
 dotenv.config();
 
 
-// Database connectie
-let connection;
+// Database connection
+let db;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
-let sessionStore;
+
+// Use memory store for sessions (simple in-memory storage)
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'default-secret-key',
   resave: true,
   saveUninitialized: true,
-  store: sessionStore,  
   cookie: { secure: false }, 
 }));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -30,42 +29,49 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true }));
 
-// Database configuratie
-const dbConfig = {
-  host: '34.70.180.208',
-  user: 'daan',
-  password: process.env.DB_PASSWORD,
-  database: 'streetlight_db',
-  timezone: process.env.NODE_ENV === 'production' ? 'Z' : '+01:00',
-};
-
-// Maakt verbinding met de database
-async function connectToDatabase() {
-  try {
-    connection = await mysql.createConnection(dbConfig);
-    console.log("Connected to MySQL database!");
-  } catch (error) {
-    console.error("Error connecting to MySQL database:", error);
-  }
-}
-
-async function createSessionStore() {
-  const MySQLStore = expressMySqlSession(session);
-  sessionStore = new MySQLStore({
-    host: dbConfig.host,
-    user: dbConfig.user,
-    password: dbConfig.password,
-    database: dbConfig.database,
-    expiration: 86400000,
-    createDatabaseTable: true,
-    schema: {
-      tableName: 'sessions',
-      columnNames: {
-        session_id: 'session_id',
-        expires: 'expires',
-        data: 'data',
-      },
-    },
+// Initialize in-memory SQLite database
+async function initializeDatabase() {
+  return new Promise((resolve, reject) => {
+    db = new sqlite3.Database(':memory:', (err) => {
+      if (err) {
+        console.error("Error creating in-memory database:", err);
+        reject(err);
+      } else {
+        console.log("Connected to in-memory SQLite database!");
+        
+        // Create tables
+        db.serialize(() => {
+          // Create user table
+          db.run(`CREATE TABLE user (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            network_id INTEGER NOT NULL
+          )`);
+          
+          // Create report table
+          db.run(`CREATE TABLE report (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            datetime DATETIME NOT NULL,
+            voltage REAL NOT NULL,
+            amperage REAL NOT NULL,
+            network_id INTEGER NOT NULL
+          )`);
+          
+          // Insert default test user (password: 'password123')
+          const hashedPassword = bcrypt.hashSync('password123', 10);
+          db.run(`INSERT INTO user (username, password, network_id) VALUES (?, ?, ?)`, 
+            ['admin', hashedPassword, 1], (err) => {
+              if (err) {
+                console.error("Error creating default user:", err);
+              } else {
+                console.log("Default user created: admin/password123");
+              }
+              resolve();
+            });
+        });
+      }
+    });
   });
 }
 
@@ -120,41 +126,44 @@ app.post('/login', async (req, res) => {
   }
 
   try {
-    const [rows] = await connection.execute(
+    db.get(
       'SELECT id, username, password, network_id FROM user WHERE username = ?',
-      [username]
-    );
-    
-    if (rows.length > 0) {
-      const user = rows[0];
-
-      const storedPasswordHash = user.password.toString();
-      const isMatch = await bcrypt.compare(password, storedPasswordHash);     
-      if (isMatch) {
-        // Use a single response
-        req.session.userId = user.id;
-        req.session.networkId = user.network_id;
-        req.session.username = user.username;
+      [username],
+      async (err, row) => {
+        if (err) {
+          console.error("Error fetching user:", err);
+          return res.status(500).json({ success: false, message: "Error logging in" });
+        }
         
-        // Save session and send response in one place
-        req.session.save((err) => {
-          if (err) {
-            console.error('Session save error:', err);
-            return res.status(500).json({ success: false, message: "Session save failed" });
+        if (row) {
+          const storedPasswordHash = row.password.toString();
+          const isMatch = await bcrypt.compare(password, storedPasswordHash);     
+          
+          if (isMatch) {
+            req.session.userId = row.id;
+            req.session.networkId = row.network_id;
+            req.session.username = row.username;
+            
+            req.session.save((err) => {
+              if (err) {
+                console.error('Session save error:', err);
+                return res.status(500).json({ success: false, message: "Session save failed" });
+              }
+              console.log('Session data:', {
+                sessionId: req.sessionID,
+                userId: req.session.userId,
+                username: req.session.username
+              });
+              return res.json({ success: true });
+            });
+          } else {
+            return res.status(401).json({ success: false, message: "Invalid username or password" });
           }
-          console.log('Session data:', {
-            sessionId: req.sessionID,
-            userId: req.session.userId,
-            username: req.session.username
-          });
-          return res.json({ success: true });
-        });
-      } else {
-        return res.status(401).json({ success: false, message: "Invalid username or password" });
+        } else {
+          return res.status(401).json({ success: false, message: "Invalid username or password" });
+        }
       }
-    } else {
-      return res.status(401).json({ success: false, message: "Invalid username or password" });
-    }
+    );
   } catch (error) {
     console.error("Error fetching user:", error);
     return res.status(500).json({ success: false, message: "Error logging in" });
@@ -170,8 +179,15 @@ app.get('/api/reports', ensureAuthenticated, async (req, res) => {
       FROM report 
       WHERE network_id = ? 
     `;
-    const [rows] = await connection.execute(query, [networkId]);
-    res.json(rows);
+    
+    db.all(query, [networkId], (err, rows) => {
+      if (err) {
+        console.error("Error fetching data:", err);
+        res.status(500).send("Error fetching data");
+      } else {
+        res.json(rows);
+      }
+    });
   } catch (error) {
     console.error("Error fetching data:", error);
     res.status(500).send("Error fetching data");
@@ -185,22 +201,34 @@ app.post('/api/reports', async (req, res) => {
       return res.status(400).send('Missing required fields');
   }
   try {
-      if (!connection) {
+      if (!db) {
           return res.status(500).send('Database connection not established');
       }
+      
+      // Create date in Amsterdam timezone
       const date = new Date();
-      const localDate = date.toISOString().slice(0, 19).replace('T', ' ');
+      const formattedDate = date.toLocaleString('sv-SE', { 
+        timeZone: 'Europe/Amsterdam' 
+      }).replace('T', ' ');
+      
       const query = `
         INSERT INTO report (datetime, voltage, amperage, network_id) 
-        VALUES (CONVERT_TZ(?, '+00:00', 'Europe/Amsterdam'), ?, ?, ?)
+        VALUES (?, ?, ?, ?)
       `;
-      const [result] = await connection.execute(query, [localDate, voltage, amperage, network_id]);
-      res.status(201).json({ 
-        id: result.insertId, 
-        localDate, 
-        voltage, 
-        amperage,
-        network_id
+      
+      db.run(query, [formattedDate, voltage, amperage, network_id], function(err) {
+        if (err) {
+          console.error("Error inserting data:", err);
+          res.status(500).send("Error inserting data");
+        } else {
+          res.status(201).json({ 
+            id: this.lastID, 
+            localDate: formattedDate, 
+            voltage, 
+            amperage,
+            network_id
+          });
+        }
       });
   } catch (error) {
       console.error("Error inserting data:", error);
@@ -221,18 +249,22 @@ app.post('/logout', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 
-// Start de Express-server op en maakt verbinding met de database
+// Start de Express-server op en initialiseert de database
 app.listen(PORT, async () => {
-  await connectToDatabase();
-  await createSessionStore();
+  await initializeDatabase();
   console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 // Sluit de databaseconnectie bij beëindiging van de server
 process.on('SIGINT', async () => {
-  if (connection) {
-    await connection.end();
-    console.log("MySQL connection closed.");
+  if (db) {
+    db.close((err) => {
+      if (err) {
+        console.error("Error closing database:", err);
+      } else {
+        console.log("SQLite database connection closed.");
+      }
+    });
   }
   process.exit();
 });
