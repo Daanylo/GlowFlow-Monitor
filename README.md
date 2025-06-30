@@ -199,3 +199,7 @@ Created by Daan & Remco for a first semester project at Fontys ICT Eindhoven.
 For support and questions, please contact the development team or create an issue in the repository.
 
 ---
+
+<div align="center">
+    <img src="https://mmmlabel.tech/wp-content/themes/mmmlabel/icons/color/128px/handyman/handyman.svg" alt="Assisted by genAI" height="100">
+</div>
